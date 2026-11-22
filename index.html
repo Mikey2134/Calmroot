@@ -46,6 +46,10 @@
     .footer{border-color:#eadfd6}.linkbtn{color:#657d66}
     @media(max-width:760px){.moss-hero{min-height:220px}.moss-halo{width:150px}.moss-cat{font-size:5.2rem}.sun-label{bottom:-25px}.hero:after{right:12px;top:9px}.auth-card:before{right:18px;top:15px}}
     @media(prefers-reduced-motion:reduce){.moss-cat{animation:none}}
+
+    /* Daily mood calendar */
+    .calendar-card{margin-top:18px}.calendar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.calendar-nav{display:flex;align-items:center;gap:8px}.calendar-nav button{border:1px solid var(--line);background:#fffdf9;color:var(--green-dark);border-radius:12px;padding:8px 12px}.calendar-month{font-weight:750;min-width:145px;text-align:center}.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:14px}.calendar-weekday{text-align:center;color:var(--muted);font-size:.78rem;padding:5px 0}.calendar-day{min-height:66px;border:1px solid var(--line);border-radius:12px;background:#fffdf9;color:var(--ink);padding:6px 2px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px}.calendar-day:disabled{opacity:.3}.calendar-day.today{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}.calendar-day.selected{background:#eaf2e6;border:2px solid var(--green-dark)}.calendar-day .day-number{font-size:.84rem}.calendar-marks{font-size:.75rem;line-height:1.1;letter-spacing:-2px;white-space:nowrap}.calendar-legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.8rem;margin-top:12px}.calendar-detail{margin-top:16px;padding:14px;background:#f7f4ed;border-radius:15px}.calendar-detail h4{margin:0 0 8px}.calendar-mood-entry{padding:8px 0;border-top:1px solid var(--line);font-size:.9rem}.calendar-mood-entry:first-of-type{border-top:0}.calendar-mood-entry p{margin:3px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted)}@media(max-width:420px){.calendar-grid{gap:3px}.calendar-day{min-height:54px;border-radius:8px}.calendar-marks{font-size:.65rem}}
+
   </style>
 </head>
 <body>
@@ -122,6 +126,17 @@
         <div class="field"><label for="entryList">Recent check-ins and notes</label><div id="entryList" aria-live="polite"><p class="empty">Nothing saved yet. That's okay.</p></div></div>
         <button class="linkbtn" id="exportData" type="button">Export my data</button> <button class="linkbtn" id="deleteData" type="button">Delete all saved data</button>
       </article>
+    </section>
+
+
+    <section class="card calendar-card" aria-labelledby="moodCalendarTitle">
+      <div class="calendar-head">
+        <div><h2 class="panel-title" id="moodCalendarTitle">Your mood calendar</h2><p class="hint" style="margin-bottom:0">A gentle look back at how you’ve been feeling. Days with check-ins show a mood marker.</p></div>
+        <div class="calendar-nav"><button type="button" id="calendarPrev" aria-label="Previous month">‹</button><span class="calendar-month" id="calendarMonth" aria-live="polite"></span><button type="button" id="calendarNext" aria-label="Next month">›</button></div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid" role="group" aria-label="Mood calendar"></div>
+      <div class="calendar-legend"><span>🌿 Calm</span><span>☁️ Okay</span><span>🌧️ Anxious</span><span>🌙 Low</span><span>🍃 Overwhelmed</span></div>
+      <div class="calendar-detail" id="calendarDetail" aria-live="polite"><h4>Select a date</h4><p class="empty">Choose any day to see mood check-ins saved for it.</p></div>
     </section>
 
     <section class="cat-companion" aria-labelledby="catTitle">
@@ -230,10 +245,41 @@
       $('breathStop').addEventListener('click',()=>{stopBreathing();$('breathCue').textContent='Ready when you are';$('breathTimer').textContent='60 seconds';$('breathStart').textContent='Start';$('breathStart').disabled=false;closeDialogs()});
       $('breathDialog').addEventListener('click',()=>{if(!breathInterval){$('breathStart').textContent='Start';$('breathStart').disabled=false}});
       document.querySelectorAll('[data-mood]').forEach(b=>b.addEventListener('click',()=>{selectedMood=b.dataset.mood;document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))}));
-      $('saveMood').addEventListener('click',()=>{if(!selectedMood){toast('Choose a feeling first, or skip this check-in.');return}const d=getData();d.moods.unshift({id:Date.now(),mood:selectedMood,note:$('moodNote').value.trim(),date:new Date().toISOString()});d.moods=d.moods.slice(0,100);if(putData(d)){selectedMood='';document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed','false'));$('moodNote').value='';renderEntries();toast(window.calmrootCloud?.user?'Check-in saved and syncing to your account.':'Check-in saved on this device. Preview mode does not sync.')}});
+      $('saveMood').addEventListener('click',()=>{if(!selectedMood){toast('Choose a feeling first, or skip this check-in.');return}const d=getData();d.moods.unshift({id:Date.now(),mood:selectedMood,note:$('moodNote').value.trim(),date:new Date().toISOString()});d.moods=d.moods.slice(0,100);if(putData(d)){selectedMood='';document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed','false'));$('moodNote').value='';renderEntries();renderCalendar();toast(window.calmrootCloud?.user?'Check-in saved and syncing to your account.':'Check-in saved on this device. Preview mode does not sync.')}});
       $('saveJournal').addEventListener('click',()=>{const value=$('journalText').value.trim();if(!value){toast('Write a few words first, or leave it for another time.');return}const d=getData();d.notes.unshift({id:Date.now(),text:value,date:new Date().toISOString()});d.notes=d.notes.slice(0,100);if(putData(d)){$('journalText').value='';renderEntries();toast(window.calmrootCloud?.user?'Your note was saved and is syncing to your account.':'Your note was saved on this device. Preview mode does not sync.')}});
       function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
       function renderEntries(){const d=getData(),el=$('entryList'),items=[...d.moods.map(x=>({...x,type:'mood'})),...d.notes.map(x=>({...x,type:'note'}))].sort((a,b)=>b.id-a.id).slice(0,8);if(!items.length){el.innerHTML='<p class="empty">Nothing saved yet. That\'s okay.</p>';return}el.innerHTML=items.map(x=>`<div class="entry"><time>${new Date(x.date).toLocaleString()} · ${x.type==='mood'?'Check-in':'Note'}</time><p>${x.type==='mood'?'Feeling: '+escapeHTML(x.mood)+(x.note?' — '+escapeHTML(x.note):''):escapeHTML(x.text)}</p></div>`).join('')}
+      let calendarMonthDate=new Date();calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth(),1);
+      let selectedCalendarDate=localDateKey(new Date());
+      const moodIcons={Calm:'🌿',Okay:'☁️',Anxious:'🌧️',Low:'🌙',Overwhelmed:'🍃'};
+      function localDateKey(value){const d=new Date(value);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+      function renderCalendar(){
+        const grid=$('calendarGrid');if(!grid)return;
+        const year=calendarMonthDate.getFullYear(),month=calendarMonthDate.getMonth();
+        $('calendarMonth').textContent=calendarMonthDate.toLocaleDateString(undefined,{month:'long',year:'numeric'});
+        grid.innerHTML='';['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(day=>{const el=document.createElement('div');el.className='calendar-weekday';el.textContent=day;el.setAttribute('aria-hidden','true');grid.appendChild(el)});
+        const firstDay=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate();
+        for(let i=0;i<firstDay;i++){const blank=document.createElement('div');blank.setAttribute('aria-hidden','true');grid.appendChild(blank)}
+        const moods=getData().moods||[],todayKey=localDateKey(new Date());
+        for(let day=1;day<=days;day++){
+          const date=new Date(year,month,day),key=localDateKey(date),entries=moods.filter(m=>m.date&&localDateKey(m.date)===key);
+          const btn=document.createElement('button');btn.type='button';btn.className='calendar-day'+(key===todayKey?' today':'')+(key===selectedCalendarDate?' selected':'');btn.setAttribute('aria-pressed',String(key===selectedCalendarDate));btn.setAttribute('aria-label',date.toLocaleDateString(undefined,{dateStyle:'full'})+(entries.length?`, ${entries.length} mood check-in${entries.length===1?'':'s'}`:', no mood check-ins'));
+          const number=document.createElement('span');number.className='day-number';number.textContent=day;btn.appendChild(number);
+          if(entries.length){const marks=document.createElement('span');marks.className='calendar-marks';marks.textContent=[...new Set(entries.map(m=>moodIcons[m.mood]||'•'))].slice(0,3).join('');marks.setAttribute('aria-hidden','true');btn.appendChild(marks)}
+          btn.addEventListener('click',()=>{selectedCalendarDate=key;renderCalendar();renderCalendarDetail()});grid.appendChild(btn);
+        }
+        renderCalendarDetail();
+      }
+      function renderCalendarDetail(){
+        const box=$('calendarDetail');if(!box)return;
+        const date=new Date(selectedCalendarDate+'T12:00:00');const entries=(getData().moods||[]).filter(m=>m.date&&localDateKey(m.date)===selectedCalendarDate).sort((a,b)=>b.id-a.id);
+        box.innerHTML=`<h4>${escapeHTML(date.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'}))}</h4>`;
+        if(!entries.length){const p=document.createElement('p');p.className='empty';p.textContent='No mood check-ins saved for this date. You can simply leave it blank.';box.appendChild(p);return}
+        entries.forEach(entry=>{const item=document.createElement('div');item.className='calendar-mood-entry';const title=document.createElement('strong');title.textContent=(moodIcons[entry.mood]||'•')+' '+entry.mood;const time=document.createElement('span');time.className='small';time.textContent=' · '+new Date(entry.date).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});item.append(title,time);if(entry.note){const note=document.createElement('p');note.textContent=entry.note;item.appendChild(note)}box.appendChild(item)});
+      }
+      $('calendarPrev').addEventListener('click',()=>{calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()-1,1);renderCalendar()});
+      $('calendarNext').addEventListener('click',()=>{calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()+1,1);renderCalendar()});
+
       $('exportData').addEventListener('click',()=>{const data=getData();const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='calmroot-my-data.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);toast('Export prepared. Keep the file somewhere private.')});
       $('deleteData').addEventListener('click',async()=>{if(confirm('Delete all CALMROOT check-ins and notes saved in this browser'+(window.calmrootCloud?.user?' and your cloud account':'')+'? This cannot be undone.')){localStorage.removeItem(STORE);if(window.calmrootCloud?.user){try{await window.calmrootCloud.deleteData()}catch{toast('Local data deleted, but cloud deletion failed. Reconnect and try again.');renderEntries();return}}renderEntries();toast('CALMROOT check-ins and notes deleted.')}});
 
@@ -246,7 +292,6 @@
       function startPreview(){window.calmrootCloud?.signOut().catch(()=>{});const profile=loadProfile();if(profile){enterApp(profile)}else{googleProfile=null;$('googleAccountInfo').classList.add('hidden');showProfileForm()}}
       $('googleSignInBtn').addEventListener('click',async()=>{if(!window.calmrootCloud){$('googleStatus').textContent='Firebase is still loading. Please try again in a moment.';return}try{const user=await window.calmrootCloud.signIn();googleProfile={name:user.displayName||'',email:user.email||'',uid:user.uid};$('profileName').value=googleProfile.name;$('googleAccountInfo').textContent='Signed in with Google as '+googleProfile.email+'. Your data will sync to your CALMROOT account after you save your profile.';$('googleAccountInfo').classList.remove('hidden');$('googleStatus').textContent='Secure Google sign-in successful. Finish setting up your profile.';const existing=await window.calmrootCloud.loadProfile();if(existing){Object.assign(existing,{email:user.email||existing.email,mode:'firebase'});localStorage.setItem(PROFILE_KEY,JSON.stringify(existing));$('profileName').value=existing.name||googleProfile.name;$('profileAge').value=existing.ageRange||'';$('profileGoal').value=existing.goal||'';$('profileConsent').checked=true;enterApp(existing);const data=await window.calmrootCloud.loadData();if(data){localStorage.setItem(STORE,JSON.stringify(data));renderEntries()}toast('Welcome back. Your cloud data is synced.')}else{showProfileForm()}}catch(err){$('googleStatus').textContent=err?.code==='auth/unauthorized-domain'?'This website domain is not authorized in Firebase Authentication settings.':(err?.message||'Google sign-in failed. Check Firebase settings and try again.')}});
       window.addEventListener('calmroot-cloud-ready',()=>{$('googleStatus').textContent='Secure Google sign-in is ready.'});
-      if(window.calmrootCloud){$('googleStatus').textContent='Secure Google sign-in is ready.';}
       window.addEventListener('calmroot-cloud-data-loaded',e=>{if(e.detail?.data){localStorage.setItem(STORE,JSON.stringify(e.detail.data));renderEntries()}});
       $('syncAccountBtn').addEventListener('click',()=>{if(window.calmrootCloud?.user){toast('You are signed in. Your saved changes sync automatically.')}else{authShell.classList.remove('hidden');loginView.classList.remove('hidden');profileView.classList.add('hidden')}});
       $('logoutBtn').addEventListener('click',async()=>{if(!confirm('Log out of CALMROOT on this device? Your cloud data will not be deleted.'))return;try{if(window.calmrootCloud?.user)await window.calmrootCloud.signOut();localStorage.removeItem(PROFILE_KEY);localStorage.removeItem(STORE);selectedMood='';document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed','false'));$('moodNote').value='';$('journalText').value='';renderEntries();$('profileChip').classList.add('hidden');authShell.classList.remove('hidden');loginView.classList.remove('hidden');profileView.classList.add('hidden');$('googleAccountInfo').classList.add('hidden');$('googleStatus').textContent='You are logged out. Sign in again whenever you are ready.';toast('Logged out. Your cloud data is still saved in Firebase.')}catch(err){toast('Could not log out. Please check your connection and try again.')}});
@@ -257,7 +302,7 @@
       // Require an explicit preview/profile step on first visit.
       if(loadProfile()){enterApp(loadProfile())}
 
-      renderEntries();
+      renderEntries();renderCalendar();
       if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
     })();
   </script>
