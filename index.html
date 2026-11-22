@@ -46,8 +46,6 @@
     .footer{border-color:#eadfd6}.linkbtn{color:#657d66}
     @media(max-width:760px){.moss-hero{min-height:220px}.moss-halo{width:150px}.moss-cat{font-size:5.2rem}.sun-label{bottom:-25px}.hero:after{right:12px;top:9px}.auth-card:before{right:18px;top:15px}}
     @media(prefers-reduced-motion:reduce){.moss-cat{animation:none}}
-
-    .calendar-card{padding:20px}.calendar-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.calendar-top .btn{min-width:44px;padding:9px 13px}.calendar-weekdays,.calendar-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}.calendar-weekdays{text-align:center;color:var(--muted);font-size:.78rem;font-weight:700;margin-bottom:7px}.calendar-days .calendar-day{min-width:0;min-height:62px;border:1px solid var(--line);border-radius:13px;background:#fffdf9;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:6px 2px}.calendar-days .calendar-day:disabled{border-color:transparent;background:transparent;cursor:default}.calendar-day .day-number{font-size:.9rem}.calendar-day .day-mood{font-size:.7rem;line-height:1.1;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis}.calendar-day.has-entry{border-color:#c7d6c1;background:#f1f6ed}.calendar-day.selected{outline:2px solid var(--green);outline-offset:1px}.mood-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#b6c9aa}.mood-dot.calm{background:#8ea98a}.mood-dot.anxious{background:#83a9bc}.mood-dot.low{background:#b0a0c4}.mood-dot.overwhelmed{background:#d8a783}.calendar-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;color:var(--muted);font-size:.78rem}.calendar-legend span{display:inline-flex;align-items:center;gap:5px}.calendar-detail{margin-top:14px;padding:13px 14px;border-radius:13px;background:#f3f6ef;color:#435448;font-size:.9rem;min-height:48px}.calendar-detail p{margin:4px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}@media(max-width:480px){.calendar-weekdays,.calendar-days{gap:4px}.calendar-days .calendar-day{min-height:52px;border-radius:9px}.calendar-day .day-mood{font-size:.62rem}.calendar-card{padding:14px}}
   </style>
 </head>
 <body>
@@ -83,14 +81,14 @@
   <main class="shell">
     <header class="topbar">
       <div class="brand"><img src="icon.svg" alt=""><span>CALMROOT</span></div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="pill hidden" id="profileChip"></span><button class="pill" id="editProfileBtn" type="button">Profile</button><button class="pill" id="syncAccountBtn" type="button">Sign in / Sync</button><button class="pill" id="logoutBtn" type="button">Log out</button><button class="pill" id="privacyBtn" type="button" aria-haspopup="dialog">🔒 Your private space</button><button class="pill" id="topHelpBtn" type="button">Need help?</button></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="pill hidden" id="profileChip"></span><button class="pill" id="editProfileBtn" type="button">Profile</button><button class="pill" id="syncAccountBtn" type="button">Sign in / Sync</button><button class="pill" id="logoutBtn" type="button">Log out</button><button class="pill" id="privacyBtn" type="button" aria-haspopup="dialog">🔒 Your private space</button></div>
     </header>
     <section class="hero" aria-labelledby="hero-title">
       <div>
         <div class="eyebrow">A little room to breathe</div>
         <h1 id="hero-title">You don't have to solve everything right now.</h1>
         <p>Pause, find your footing, and take the next small step. This space is yours to use in your own way, at your own pace.</p>
-        <div class="rowbtn" style="justify-content:flex-start;gap:10px"><button class="btn primary" type="button" id="startBreathing">Take a calming pause <span aria-hidden="true">→</span></button></div>
+        <button class="btn primary" type="button" id="startBreathing">Take a calming pause <span aria-hidden="true">→</span></button>
       </div>
       <div class="hero-art moss-hero" aria-label="Moss the sleepy cat, here to keep you company"><div class="moss-halo"><span class="moss-stars">✦　·　✧</span><span class="moss-cat" aria-hidden="true">🐈</span><span class="moss-sparkle">✿</span></div><div class="sun-label">one purr at a time</div></div>
     </section>
@@ -126,29 +124,11 @@
       </article>
     </section>
 
-    <div class="section-head" id="wellness-calendar-heading"><div><h2>Emotional Wellness Calendar</h2><p>Notice how your days have felt, gently and without judgement. Only saved mood check-ins appear here.</p></div></div>
-    <section class="card calendar-card" aria-labelledby="wellness-calendar-heading">
-      <div class="calendar-top"><button class="btn secondary" id="calendarPrev" type="button" aria-label="Previous month">←</button><h3 id="calendarMonthLabel" class="panel-title" aria-live="polite">This month</h3><button class="btn secondary" id="calendarNext" type="button" aria-label="Next month">→</button></div>
-      <div class="calendar-weekdays" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
-      <div id="calendarDays" class="calendar-days" role="group" aria-label="Mood check-ins by day"></div>
-      <div class="calendar-legend"><span><i class="mood-dot calm"></i>Calm / Okay</span><span><i class="mood-dot anxious"></i>Anxious</span><span><i class="mood-dot low"></i>Low</span><span><i class="mood-dot overwhelmed"></i>Overwhelmed</span></div>
-      <div id="calendarDayDetail" class="calendar-detail" aria-live="polite">Choose a day with a check-in to see its saved mood.</div>
-      <p class="small" style="margin:12px 0 0">This calendar reflects only the check-ins you choose to save. It is not a diagnosis, and there is no “good” or “bad” pattern to achieve.</p>
-    </section>
-
     <section class="cat-companion" aria-labelledby="catTitle">
       <div class="cat-avatar" aria-hidden="true"><span>🐈</span><i>♡</i></div>
       <div><h3 id="catTitle">Moss, your calm companion</h3><p id="catMessage" aria-live="polite">You don't have to fix the whole day. Let's take one gentle moment at a time.</p><p class="share-note">Moss offers encouragement, not medical advice. When signed in, saved reflections sync to your Firebase account. The project owner administers that database; see Privacy &amp; safety for details.</p></div>
       <button class="btn secondary" id="catComfort" type="button">A little comfort</button>
     </section>
-
-    <div class="section-head" id="help-support"><div><h2>Need Help?</h2><p>Real support is available beyond this app. Reaching out is okay.</p></div></div>
-    <section class="grid" aria-label="India help and support contacts">
-      <article class="card"><div class="card-icon" aria-hidden="true">💚</div><h3>Tele-MANAS · 14416</h3><p>Free, 24/7 mental-health support in India for emotional distress, stress, anxiety, and other concerns.</p><a class="btn primary" href="tel:14416" aria-label="Call Tele-MANAS at 14416">Call 14416</a><p class="small" style="margin-top:12px;margin-bottom:0">Official information: <a href="https://dghs.mohfw.gov.in/national-mental-health-programme.php" target="_blank" rel="noopener noreferrer">National Tele-MANAS programme</a>.</p></article>
-      <article class="card"><div class="card-icon" aria-hidden="true">🆘</div><h3>Emergency · 112</h3><p>For an urgent emergency requiring immediate assistance anywhere in India.</p><a class="btn secondary" href="tel:112" aria-label="Call emergency services at 112">Call 112</a><p class="small" style="margin-top:12px;margin-bottom:0">Official information: <a href="https://www.mha.gov.in/emergency-response-support-system-erss" target="_blank" rel="noopener noreferrer">Emergency Response Support System</a>.</p></article>
-      <article class="card"><div class="card-icon" aria-hidden="true">🩺</div><h3>Hair and scalp care</h3><p>A qualified dermatologist can assess hair loss and discuss care options for alopecia areata. CALMROOT cannot diagnose or treat it.</p><a class="btn secondary" href="https://esanjeevani.mohfw.gov.in/" target="_blank" rel="noopener noreferrer">Explore eSanjeevani</a><p class="small" style="margin-top:12px;margin-bottom:0">Online consultation options may vary; you can also contact a local hospital or dermatology clinic.</p></article>
-    </section>
-    <p class="small" style="margin-top:10px">If you feel unsafe or need urgent help, contact emergency services or a trusted person. This app is not monitored and cannot provide emergency response.</p>
 
     <div class="section-head"><div><h2>Confidence Corner</h2><p>Gentle reminders for the days when appearance or uncertainty feels heavy.</p></div></div>
     <section class="support-grid" aria-label="Confidence and difficult-day support">
@@ -224,8 +204,7 @@
       function openDialog(el){el.classList.remove('hidden');const focus=el.querySelector('button');if(focus)focus.focus();document.body.style.overflow='hidden'}
       function closeDialogs(){dialogs.forEach(d=>d.classList.add('hidden'));document.body.style.overflow='';stopBreathing();}
       document.querySelectorAll('.closeModal').forEach(b=>b.addEventListener('click',closeDialogs));dialogs.forEach(d=>d.addEventListener('click',e=>{if(e.target===d)closeDialogs()}));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDialogs()});
-      $('privacyBtn').addEventListener('click',()=>openDialog($('privacyDialog')));$('aboutBtn').addEventListener('click',()=>openDialog($('privacyDialog')));$('topHelpBtn').addEventListener('click',()=> $('help-support').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'}));
-       do not have to handle everything at once. You deserve patience and support, exactly as you are.';$('affirmationText').textContent='I am allowed to have hard feelings and still treat myself with kindness.';$('catTitle').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});toast('A gentle reminder is here. Keep it or skip it.');});
+      $('privacyBtn').addEventListener('click',()=>openDialog($('privacyDialog')));$('aboutBtn').addEventListener('click',()=>openDialog($('privacyDialog')));
       const catMessages=['You don’t have to fix the whole day. One gentle moment is enough.','Rest is allowed. You do not have to earn it.','A feeling can be strong and still pass. Take your time.','You deserve kindness, including from yourself.','Small steps count, even when nobody else sees them.','You can pause, drink some water, and begin again when you’re ready.'];let lastCat=-1;$('catComfort').addEventListener('click',()=>{let next;do{next=Math.floor(Math.random()*catMessages.length)}while(next===lastCat);lastCat=next;$('catMessage').textContent=catMessages[next];toast('Moss is here for a gentle moment.');});
       const affirmations=[
         'My worth is not measured by my hair, my appearance, or how confident I feel today.',
@@ -251,38 +230,12 @@
       $('breathStop').addEventListener('click',()=>{stopBreathing();$('breathCue').textContent='Ready when you are';$('breathTimer').textContent='60 seconds';$('breathStart').textContent='Start';$('breathStart').disabled=false;closeDialogs()});
       $('breathDialog').addEventListener('click',()=>{if(!breathInterval){$('breathStart').textContent='Start';$('breathStart').disabled=false}});
       document.querySelectorAll('[data-mood]').forEach(b=>b.addEventListener('click',()=>{selectedMood=b.dataset.mood;document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))}));
-      $('saveMood').addEventListener('click',()=>{if(!selectedMood){toast('Choose a feeling first, or skip this check-in.');return}const d=getData();d.moods.unshift({id:Date.now(),mood:selectedMood,note:$('moodNote').value.trim(),date:new Date().toISOString()});d.moods=d.moods.slice(0,100);if(putData(d)){selectedMood='';document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed','false'));$('moodNote').value='';renderEntries();renderCalendar();toast(window.calmrootCloud?.user?'Check-in saved and syncing to your account.':'Check-in saved on this device. Preview mode does not sync.')}});
-      $('saveJournal').addEventListener('click',()=>{const value=$('journalText').value.trim();if(!value){toast('Write a few words first, or leave it for another time.');return}const d=getData();d.notes.unshift({id:Date.now(),text:value,date:new Date().toISOString()});d.notes=d.notes.slice(0,100);if(putData(d)){$('journalText').value='';renderEntries();renderCalendar();toast(window.calmrootCloud?.user?'Your note was saved and is syncing to your account.':'Your note was saved on this device. Preview mode does not sync.')}});
+      $('saveMood').addEventListener('click',()=>{if(!selectedMood){toast('Choose a feeling first, or skip this check-in.');return}const d=getData();d.moods.unshift({id:Date.now(),mood:selectedMood,note:$('moodNote').value.trim(),date:new Date().toISOString()});d.moods=d.moods.slice(0,100);if(putData(d)){selectedMood='';document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed','false'));$('moodNote').value='';renderEntries();toast(window.calmrootCloud?.user?'Check-in saved and syncing to your account.':'Check-in saved on this device. Preview mode does not sync.')}});
+      $('saveJournal').addEventListener('click',()=>{const value=$('journalText').value.trim();if(!value){toast('Write a few words first, or leave it for another time.');return}const d=getData();d.notes.unshift({id:Date.now(),text:value,date:new Date().toISOString()});d.notes=d.notes.slice(0,100);if(putData(d)){$('journalText').value='';renderEntries();toast(window.calmrootCloud?.user?'Your note was saved and is syncing to your account.':'Your note was saved on this device. Preview mode does not sync.')}});
       function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-      let calendarView = new Date(); calendarView = new Date(calendarView.getFullYear(), calendarView.getMonth(), 1); let selectedCalendarDate = '';
-      function moodClass(mood){if(mood==='Calm'||mood==='Okay')return 'calm';if(mood==='Anxious')return 'anxious';if(mood==='Low')return 'low';if(mood==='Overwhelmed')return 'overwhelmed';return 'calm'}
-      function renderCalendar(){
-        const data=getData(), moods=Array.isArray(data.moods)?data.moods:[];
-        const year=calendarView.getFullYear(), month=calendarView.getMonth();
-        $('calendarMonthLabel').textContent=calendarView.toLocaleDateString(undefined,{month:'long',year:'numeric'});
-        const first=new Date(year,month,1), daysInMonth=new Date(year,month+1,0).getDate();
-        const offset=(first.getDay()+6)%7; const cells=[];
-        for(let i=0;i<offset;i++) cells.push('<button class="calendar-day" type="button" disabled aria-hidden="true"></button>');
-        for(let day=1;day<=daysInMonth;day++){
-          const dateKey=year+'-'+String(month+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-          const entries=moods.filter(m=>{const d=new Date(m.date);return !Number.isNaN(d.getTime())&&d.getFullYear()===year&&d.getMonth()===month&&d.getDate()===day;});
-          const latest=entries[0]; const cls=latest?'has-entry '+moodClass(latest.mood):''; const selected=selectedCalendarDate===dateKey?' selected':'';
-          const label=entries.length?`${dateKey}: ${entries.map(e=>e.mood).join(', ')}${entries.some(e=>e.note)?'. Notes saved':''}`:`${dateKey}: no saved mood check-in`;
-          cells.push(`<button class="calendar-day ${cls}${selected}" type="button" data-calendar-date="${dateKey}" aria-label="${label}" ${entries.length?'':'data-empty-day="true"'}><span class="day-number">${day}</span>${latest?`<span class="mood-dot ${moodClass(latest.mood)}" aria-hidden="true"></span><span class="day-mood">${escapeHTML(latest.mood)}</span>`:''}</button>`);
-        }
-        $('calendarDays').innerHTML=cells.join('');
-        $('calendarDays').querySelectorAll('[data-calendar-date]').forEach(btn=>btn.addEventListener('click',()=>{
-          selectedCalendarDate=btn.dataset.calendarDate; renderCalendar();
-          const [y,m,d]=selectedCalendarDate.split('-').map(Number); const entries=moods.filter(entry=>{const dt=new Date(entry.date);return !Number.isNaN(dt.getTime())&&dt.getFullYear()===y&&dt.getMonth()+1===m&&dt.getDate()===d;});
-          if(!entries.length){$('calendarDayDetail').textContent='No mood check-in saved for this day. That is completely okay.';return;}
-          $('calendarDayDetail').innerHTML=`<strong>${new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</strong>`+entries.map(entry=>`<p><strong>${escapeHTML(entry.mood)}</strong>${entry.note?' — '+escapeHTML(entry.note):''}</p>`).join('');
-        }));
-      }
-      $('calendarPrev').addEventListener('click',()=>{calendarView=new Date(calendarView.getFullYear(),calendarView.getMonth()-1,1);selectedCalendarDate='';$('calendarDayDetail').textContent='Choose a day with a check-in to see its saved mood.';renderCalendar()});
-      $('calendarNext').addEventListener('click',()=>{calendarView=new Date(calendarView.getFullYear(),calendarView.getMonth()+1,1);selectedCalendarDate='';$('calendarDayDetail').textContent='Choose a day with a check-in to see its saved mood.';renderCalendar()});
       function renderEntries(){const d=getData(),el=$('entryList'),items=[...d.moods.map(x=>({...x,type:'mood'})),...d.notes.map(x=>({...x,type:'note'}))].sort((a,b)=>b.id-a.id).slice(0,8);if(!items.length){el.innerHTML='<p class="empty">Nothing saved yet. That\'s okay.</p>';return}el.innerHTML=items.map(x=>`<div class="entry"><time>${new Date(x.date).toLocaleString()} · ${x.type==='mood'?'Check-in':'Note'}</time><p>${x.type==='mood'?'Feeling: '+escapeHTML(x.mood)+(x.note?' — '+escapeHTML(x.note):''):escapeHTML(x.text)}</p></div>`).join('')}
       $('exportData').addEventListener('click',()=>{const data=getData();const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='calmroot-my-data.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);toast('Export prepared. Keep the file somewhere private.')});
-      $('deleteData').addEventListener('click',async()=>{if(confirm('Delete all CALMROOT check-ins and notes saved in this browser'+(window.calmrootCloud?.user?' and your cloud account':'')+'? This cannot be undone.')){localStorage.removeItem(STORE);if(window.calmrootCloud?.user){try{await window.calmrootCloud.deleteData()}catch{toast('Local data deleted, but cloud deletion failed. Reconnect and try again.');renderEntries();return}}renderEntries();renderCalendar();toast('CALMROOT check-ins and notes deleted.')}});
+      $('deleteData').addEventListener('click',async()=>{if(confirm('Delete all CALMROOT check-ins and notes saved in this browser'+(window.calmrootCloud?.user?' and your cloud account':'')+'? This cannot be undone.')){localStorage.removeItem(STORE);if(window.calmrootCloud?.user){try{await window.calmrootCloud.deleteData()}catch{toast('Local data deleted, but cloud deletion failed. Reconnect and try again.');renderEntries();return}}renderEntries();toast('CALMROOT check-ins and notes deleted.')}});
 
       const PROFILE_KEY='calmroot-profile-v1';
       const authShell=$('authShell'), loginView=$('loginView'), profileView=$('profileView');
@@ -293,9 +246,10 @@
       function startPreview(){window.calmrootCloud?.signOut().catch(()=>{});const profile=loadProfile();if(profile){enterApp(profile)}else{googleProfile=null;$('googleAccountInfo').classList.add('hidden');showProfileForm()}}
       $('googleSignInBtn').addEventListener('click',async()=>{if(!window.calmrootCloud){$('googleStatus').textContent='Firebase is still loading. Please try again in a moment.';return}try{const user=await window.calmrootCloud.signIn();googleProfile={name:user.displayName||'',email:user.email||'',uid:user.uid};$('profileName').value=googleProfile.name;$('googleAccountInfo').textContent='Signed in with Google as '+googleProfile.email+'. Your data will sync to your CALMROOT account after you save your profile.';$('googleAccountInfo').classList.remove('hidden');$('googleStatus').textContent='Secure Google sign-in successful. Finish setting up your profile.';const existing=await window.calmrootCloud.loadProfile();if(existing){Object.assign(existing,{email:user.email||existing.email,mode:'firebase'});localStorage.setItem(PROFILE_KEY,JSON.stringify(existing));$('profileName').value=existing.name||googleProfile.name;$('profileAge').value=existing.ageRange||'';$('profileGoal').value=existing.goal||'';$('profileConsent').checked=true;enterApp(existing);const data=await window.calmrootCloud.loadData();if(data){localStorage.setItem(STORE,JSON.stringify(data));renderEntries()}toast('Welcome back. Your cloud data is synced.')}else{showProfileForm()}}catch(err){$('googleStatus').textContent=err?.code==='auth/unauthorized-domain'?'This website domain is not authorized in Firebase Authentication settings.':(err?.message||'Google sign-in failed. Check Firebase settings and try again.')}});
       window.addEventListener('calmroot-cloud-ready',()=>{$('googleStatus').textContent='Secure Google sign-in is ready.'});
-      window.addEventListener('calmroot-cloud-data-loaded',e=>{if(e.detail?.data){localStorage.setItem(STORE,JSON.stringify(e.detail.data));renderEntries();renderCalendar()}});
+      if(window.calmrootCloud){$('googleStatus').textContent='Secure Google sign-in is ready.';}
+      window.addEventListener('calmroot-cloud-data-loaded',e=>{if(e.detail?.data){localStorage.setItem(STORE,JSON.stringify(e.detail.data));renderEntries()}});
       $('syncAccountBtn').addEventListener('click',()=>{if(window.calmrootCloud?.user){toast('You are signed in. Your saved changes sync automatically.')}else{authShell.classList.remove('hidden');loginView.classList.remove('hidden');profileView.classList.add('hidden')}});
-      $('logoutBtn').addEventListener('click',async()=>{if(!confirm('Log out of CALMROOT on this device? Your cloud data will not be deleted.'))return;try{if(window.calmrootCloud?.user)await window.calmrootCloud.signOut();localStorage.removeItem(PROFILE_KEY);localStorage.removeItem(STORE);selectedMood='';document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed','false'));$('moodNote').value='';$('journalText').value='';renderEntries();renderCalendar();$('profileChip').classList.add('hidden');authShell.classList.remove('hidden');loginView.classList.remove('hidden');profileView.classList.add('hidden');$('googleAccountInfo').classList.add('hidden');$('googleStatus').textContent='You are logged out. Sign in again whenever you are ready.';toast('Logged out. Your cloud data is still saved in Firebase.')}catch(err){toast('Could not log out. Please check your connection and try again.')}});
+      $('logoutBtn').addEventListener('click',async()=>{if(!confirm('Log out of CALMROOT on this device? Your cloud data will not be deleted.'))return;try{if(window.calmrootCloud?.user)await window.calmrootCloud.signOut();localStorage.removeItem(PROFILE_KEY);localStorage.removeItem(STORE);selectedMood='';document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed','false'));$('moodNote').value='';$('journalText').value='';renderEntries();$('profileChip').classList.add('hidden');authShell.classList.remove('hidden');loginView.classList.remove('hidden');profileView.classList.add('hidden');$('googleAccountInfo').classList.add('hidden');$('googleStatus').textContent='You are logged out. Sign in again whenever you are ready.';toast('Logged out. Your cloud data is still saved in Firebase.')}catch(err){toast('Could not log out. Please check your connection and try again.')}});
       $('previewBtn').addEventListener('click',startPreview);
       $('backToLogin').addEventListener('click',()=>{profileView.classList.add('hidden');loginView.classList.remove('hidden')});
       profileView.addEventListener('submit',async e=>{e.preventDefault();if(!$('profileConsent').checked){toast('Please confirm the storage note to continue.');return}const user=window.calmrootCloud?.user;const profile={name:$('profileName').value.trim(),email:user?.email||googleProfile?.email||'',ageRange:$('profileAge').value,goal:$('profileGoal').value,updatedAt:new Date().toISOString(),mode:user?'firebase':'preview-local'};if(!profile.name){$('profileName').focus();return}try{localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));if(user){await window.calmrootCloud.saveProfile(profile);const data=await window.calmrootCloud.loadData();if(data){localStorage.setItem(STORE,JSON.stringify(data))}else{await window.calmrootCloud.saveData(getData())}}enterApp(profile);renderEntries();toast(user?'Profile saved to your CALMROOT cloud account.':'Profile saved in this browser. Preview mode does not sync.')}catch(err){toast('Could not save to cloud. Check your connection and Firestore rules, then try again.')}});
@@ -303,7 +257,7 @@
       // Require an explicit preview/profile step on first visit.
       if(loadProfile()){enterApp(loadProfile())}
 
-      renderEntries();renderCalendar();
+      renderEntries();
       if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
     })();
   </script>
