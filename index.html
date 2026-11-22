@@ -52,6 +52,7 @@
 
   
     /* Gentle daily routines */
+    .sanctuary-card{margin-top:18px;background:linear-gradient(145deg,#fffdf8,#f0f4ec)}.sanctuary-card textarea{min-height:150px}.sanctuary-entry{border-top:1px solid var(--line);padding:12px 0}.sanctuary-entry:first-child{border-top:0}.sanctuary-entry time{font-size:.78rem;color:var(--muted)}.sanctuary-entry p{white-space:pre-wrap;overflow-wrap:anywhere;margin:7px 0}
     .routine-card{margin-top:18px}.routine-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.routine-date{font-size:.85rem;color:var(--muted);background:#f0f4ec;border-radius:999px;padding:6px 11px}.routine-habits{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;margin:12px 0}.routine-habit{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:15px;padding:12px;background:#fffdf9}.routine-habit input{accent-color:var(--green);width:18px;height:18px;flex-shrink:0}.routine-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.routine-summary{margin-top:12px;padding:12px 14px;background:#f0f4ec;border-radius:15px;color:var(--green-dark)}
 
   </style>
@@ -165,6 +166,20 @@
       <div class="routine-summary" id="routineSummary" aria-live="polite">Your routine is yours to shape. You can save just one small thing—or nothing at all.</div>
     </section>
 
+    <section class="card sanctuary-card" aria-labelledby="sanctuaryTitle">
+      <div class="eyebrow">A space just for you</div>
+      <h2 class="panel-title" id="sanctuaryTitle">Private Sanctuary</h2>
+      <p class="hint">No lock or extra steps—just a quiet place to put feelings into words. You can write an unsent letter, let something out, or leave the page blank.</p>
+      <div class="field"><label for="sanctuaryPrompt">What would help right now?</label>
+        <select id="sanctuaryPrompt"><option value="free">Write freely</option><option value="unsent">An unsent letter</option><option value="release">Something I need to let go of</option><option value="comfort">What I wish someone understood</option></select>
+      </div>
+      <div class="field"><label for="sanctuaryText">Your words</label><textarea id="sanctuaryText" maxlength="5000" placeholder="You don't have to make it perfect. Start wherever you are…"></textarea><span class="small" id="sanctuaryCount">0 / 5000 characters</span></div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn primary" type="button" id="saveSanctuary">Save to my sanctuary</button><button class="btn secondary" type="button" id="clearSanctuary">Clear the page</button></div>
+      <div class="routine-summary" id="sanctuaryStatus" aria-live="polite">You don't have to send what you write. This space is for you.</div>
+      <div class="field"><label>Your saved sanctuary notes</label><div id="sanctuaryEntries" aria-live="polite"><p class="empty">Nothing saved here yet. That's okay.</p></div></div>
+      <p class="small">Privacy note: when signed in, saved sanctuary notes sync with your CALMROOT Firebase account, which the project owner administers. This is not an encrypted or locked vault; avoid storing details you need to keep strictly confidential.</p>
+    </section>
+
     <section class="cat-companion" aria-labelledby="catTitle">
       <div class="cat-avatar" aria-hidden="true"><span>🐈</span><i>♡</i></div>
       <div><h3 id="catTitle">Moss, your calm companion</h3><p id="catMessage" aria-live="polite">You don't have to fix the whole day. Let's take one gentle moment at a time.</p><p class="share-note">Moss offers encouragement, not medical advice. When signed in, saved reflections sync to your Firebase account. The project owner administers that database; see Privacy &amp; safety for details.</p></div>
@@ -230,7 +245,7 @@
         saveProfile:async profile=>setDoc(userDoc(),{profile,updatedAt:new Date().toISOString()},{merge:true}),
         loadData:async()=>{const s=await getDoc(userDoc());return s.exists()?s.data().appData||null:null},
         saveData:async appData=>setDoc(userDoc(),{appData,updatedAt:new Date().toISOString()},{merge:true}),
-        deleteData:async()=>setDoc(userDoc(),{appData:{moods:[],notes:[]},updatedAt:new Date().toISOString()},{merge:true})};
+        deleteData:async()=>setDoc(userDoc(),{appData:{moods:[],notes:[],routines:{},sanctuary:[]},updatedAt:new Date().toISOString()},{merge:true})};
       onAuthStateChanged(auth,async user=>{if(user){try{const snap=await getDoc(userDoc());if(snap.exists()){const d=snap.data();if(d.profile)localStorage.setItem('calmroot-profile-v1',JSON.stringify({...d.profile,email:user.email||d.profile.email,mode:'firebase'}));if(d.appData)localStorage.setItem('calmroot-v1',JSON.stringify(d.appData));window.dispatchEvent(new CustomEvent('calmroot-cloud-data-loaded',{detail:{data:d.appData||null}}))}}catch(e){console.warn('CALMROOT cloud sync:',e)}}});
       window.dispatchEvent(new Event('calmroot-cloud-ready'));
     } catch (e) { console.error('CALMROOT Firebase setup failed:',e); const status=document.getElementById('googleStatus');if(status)status.textContent='Firebase setup could not start. Check the configuration and browser connection.'; }
@@ -294,6 +309,14 @@
       document.querySelectorAll('.journal-prompt').forEach(button=>button.addEventListener('click',()=>{const area=$('journalText'),prompt=button.dataset.prompt;if(area.value.trim())area.value=area.value.trimEnd()+'\n\n'+prompt+'\n';else area.value=prompt+'\n\n';area.focus();updateJournalCount();}));
       function updateJournalCount(){$('journalCount').textContent=$('journalText').value.length+' / 4000 characters'}
       $('journalText').addEventListener('input',updateJournalCount);
+      const sanctuaryPrompts={free:'',unsent:'Dear you,\n\nThere are things I need to say, even if I never send this.\n\n',release:'Something I am ready to put down, even just for this moment: \n\n',comfort:'What I wish someone understood about me right now: \n\n'};
+      $('sanctuaryPrompt').addEventListener('change',()=>{const area=$('sanctuaryText');if(!area.value.trim()&&sanctuaryPrompts[$('sanctuaryPrompt').value])area.value=sanctuaryPrompts[$('sanctuaryPrompt').value];updateSanctuaryCount();area.focus()});
+      function updateSanctuaryCount(){$('sanctuaryCount').textContent=$('sanctuaryText').value.length+' / 5000 characters'}
+      $('sanctuaryText').addEventListener('input',updateSanctuaryCount);
+      $('clearSanctuary').addEventListener('click',()=>{if($('sanctuaryText').value.trim()&&!confirm('Clear the words on this page? Unsaved writing will be lost.'))return;$('sanctuaryText').value='';$('sanctuaryPrompt').value='free';updateSanctuaryCount();$('sanctuaryStatus').textContent='The page is clear. Take your time.'});
+      $('saveSanctuary').addEventListener('click',()=>{const text=$('sanctuaryText').value.trim();if(!text){toast('Write anything you want to keep, or leave this space empty.');return}const d=getData();if(!Array.isArray(d.sanctuary))d.sanctuary=[];d.sanctuary.unshift({id:Date.now(),text,kind:$('sanctuaryPrompt').value,date:new Date().toISOString()});d.sanctuary=d.sanctuary.slice(0,100);if(putData(d)){$('sanctuaryText').value='';$('sanctuaryPrompt').value='free';updateSanctuaryCount();renderSanctuary();$('sanctuaryStatus').textContent=window.calmrootCloud?.user?'Saved and syncing to your account.':'Saved on this device in this browser.';toast('Your sanctuary note is saved.')}});
+      function renderSanctuary(){const el=$('sanctuaryEntries');if(!el)return;const items=getData().sanctuary||[];if(!items.length){el.innerHTML="<p class='empty'>Nothing saved here yet. That's okay.</p>";return}el.innerHTML=items.slice(0,20).map(x=>`<article class="sanctuary-entry"><time>${escapeHTML(new Date(x.date).toLocaleString())} · ${escapeHTML(({free:'Reflection',unsent:'Unsent letter',release:'Letting go',comfort:'What I wish someone understood'})[x.kind]||'Reflection')}</time><p>${escapeHTML(x.text)}</p><button class="linkbtn" type="button" data-delete-sanctuary="${Number(x.id)}">Delete this note</button></article>`).join('');el.querySelectorAll('[data-delete-sanctuary]').forEach(b=>b.addEventListener('click',()=>{if(!confirm('Delete this sanctuary note?'))return;const d=getData();d.sanctuary=(d.sanctuary||[]).filter(x=>Number(x.id)!==Number(b.dataset.deleteSanctuary));if(putData(d)){renderSanctuary();toast('Sanctuary note deleted.')}}))}
+      renderSanctuary();window.addEventListener('calmroot-cloud-data-loaded',renderSanctuary);
       $('entrySearch').addEventListener('input',renderEntries);
       $('saveJournal').addEventListener('click',()=>{const value=$('journalText').value.trim();if(!value){toast('Write a few words first, or choose a prompt.');return}const tags=$('journalTags').value.split(',').map(t=>t.trim()).filter(Boolean).slice(0,10);const d=getData();d.notes.unshift({id:Date.now(),text:value,date:new Date().toISOString(),tags});d.notes=d.notes.slice(0,100);if(putData(d)){$('journalText').value='';$('journalTags').value='';updateJournalCount();renderEntries();toast(window.calmrootCloud?.user?'Reflection saved and syncing to your account.':'Reflection saved on this device. Preview mode does not sync.')}});
       function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -330,7 +353,7 @@
       $('calendarNext').addEventListener('click',()=>{calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()+1,1);renderCalendar()});
 
       $('exportData').addEventListener('click',()=>{const data=getData();const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='calmroot-my-data.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);toast('Export prepared. Keep the file somewhere private.')});
-      $('deleteData').addEventListener('click',async()=>{if(confirm('Delete all CALMROOT check-ins and notes saved in this browser'+(window.calmrootCloud?.user?' and your cloud account':'')+'? This cannot be undone.')){localStorage.removeItem(STORE);if(window.calmrootCloud?.user){try{await window.calmrootCloud.deleteData()}catch{toast('Local data deleted, but cloud deletion failed. Reconnect and try again.');renderEntries();return}}renderEntries();toast('CALMROOT check-ins and notes deleted.')}});
+      $('deleteData').addEventListener('click',async()=>{if(confirm('Delete all CALMROOT check-ins, routines, sanctuary notes and reflections saved in this browser'+(window.calmrootCloud?.user?' and your cloud account':'')+'? This cannot be undone.')){localStorage.removeItem(STORE);if(window.calmrootCloud?.user){try{await window.calmrootCloud.deleteData()}catch{toast('Local data deleted, but cloud deletion failed. Reconnect and try again.');renderEntries();return}}renderEntries();renderSanctuary();loadTodayRoutine();toast('CALMROOT saved data deleted.')}});
 
       const PROFILE_KEY='calmroot-profile-v1';
       const authShell=$('authShell'), loginView=$('loginView'), profileView=$('profileView');
