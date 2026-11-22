@@ -81,14 +81,14 @@
   <main class="shell">
     <header class="topbar">
       <div class="brand"><img src="icon.svg" alt=""><span>CALMROOT</span></div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="pill hidden" id="profileChip"></span><button class="pill" id="editProfileBtn" type="button">Profile</button><button class="pill" id="syncAccountBtn" type="button">Sign in / Sync</button><button class="pill" id="logoutBtn" type="button">Log out</button><button class="pill" id="privacyBtn" type="button" aria-haspopup="dialog">🔒 Your private space</button></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="pill hidden" id="profileChip"></span><button class="pill" id="editProfileBtn" type="button">Profile</button><button class="pill" id="syncAccountBtn" type="button">Sign in / Sync</button><button class="pill" id="logoutBtn" type="button">Log out</button><button class="pill" id="privacyBtn" type="button" aria-haspopup="dialog">🔒 Your private space</button><button class="pill" id="topHelpBtn" type="button">Need help?</button></div>
     </header>
     <section class="hero" aria-labelledby="hero-title">
       <div>
         <div class="eyebrow">A little room to breathe</div>
         <h1 id="hero-title">You don't have to solve everything right now.</h1>
         <p>Pause, find your footing, and take the next small step. This space is yours to use in your own way, at your own pace.</p>
-        <button class="btn primary" type="button" id="startBreathing">Take a calming pause <span aria-hidden="true">→</span></button>
+        <div class="rowbtn" style="justify-content:flex-start;gap:10px"><button class="btn primary" type="button" id="startBreathing">Take a calming pause <span aria-hidden="true">→</span></button><button class="btn secondary" type="button" id="openDifficultDay">I'm having a hard moment</button></div>
       </div>
       <div class="hero-art moss-hero" aria-label="Moss the sleepy cat, here to keep you company"><div class="moss-halo"><span class="moss-stars">✦　·　✧</span><span class="moss-cat" aria-hidden="true">🐈</span><span class="moss-sparkle">✿</span></div><div class="sun-label">one purr at a time</div></div>
     </section>
@@ -171,6 +171,15 @@
   <section id="groundDialog" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="groundTitle">
     <div class="modal"><div class="eyebrow">Come back to the present</div><h2 id="groundTitle">The 5–4–3–2–1 grounding exercise</h2><p class="hint">Move through these gently. You can keep your eyes open and skip any step that doesn't suit you.</p><ol class="ground-steps"><li><b>5 things</b> you can see around you.</li><li><b>4 things</b> you can feel (your feet on the floor, fabric, or the chair).</li><li><b>3 things</b> you can hear.</li><li><b>2 things</b> you can smell, or two scents you like to imagine.</li><li><b>1 thing</b> you can taste, or one kind thing you can tell yourself.</li></ol><p class="small">You don't have to get it perfect. If focusing on senses feels uncomfortable, simply name where you are and today's date.</p><div class="modal-actions"><button class="btn primary closeModal" type="button">I'm ready</button></div></div>
   </section>
+  <section id="difficultDayDialog" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="difficultDayTitle">
+    <div class="modal"><div class="eyebrow">Moss is here with you</div><h2 id="difficultDayTitle">Let's make this moment a little easier.</h2><p class="hint">You don't have to explain what happened, feel positive, or solve everything right now. Choose one small thing—or simply pause here.</p>
+      <div class="notice" style="margin:14px 0">Try saying: <strong>“This is a hard moment, and I can take it one step at a time.”</strong></div>
+      <div style="display:grid;gap:10px;margin-top:16px"><button class="btn primary" id="difficultBreathe" type="button">Take a gentle breathing pause</button><button class="btn secondary" id="difficultGround" type="button">Help me feel grounded</button><button class="btn secondary" id="difficultKindness" type="button">Give me a kind reminder</button></div>
+      <div style="border-top:1px solid var(--line);margin-top:18px;padding-top:15px"><h3 style="margin:0 0 5px">Would a real person help?</h3><p class="small">You can contact someone you trust. In India, Tele-MANAS offers free 24/7 mental-health support at 14416. For an emergency, call 112.</p><div class="rowbtn"><a class="btn secondary" href="tel:14416">Call 14416</a><a class="btn secondary" href="tel:112">Emergency · 112</a></div></div>
+      <p class="small" style="margin-top:16px">CALMROOT isn't monitored and can't provide emergency help. If you feel in immediate danger, contact emergency services or someone nearby who can help.</p>
+      <div class="modal-actions"><button class="btn secondary closeModal" type="button">Close</button></div>
+    </div>
+  </section>
   <section id="privacyDialog" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
     <div class="modal"><div class="eyebrow">Your privacy matters</div><h2 id="privacyTitle">Your private space</h2><p>When you use Google sign-in, CALMROOT uses Firebase Authentication and Cloud Firestore to sync your profile, mood check-ins and journal notes to your user account. Preview mode stays in this browser and does not sync.</p><ul><li>Firestore rules are intended to let each signed-in user access only their own records.</li><li>The project owner administers the Firebase project and may technically access database records through project-level tools, so do not enter information you would not want the service operator to handle.</li><li>Export creates a JSON file on your device. Keep it somewhere private.</li><li>Deleting cloud data requires an internet connection. Clearing browser data does not delete cloud records.</li><li>This is a wellbeing tool, not a medical service. Avoid diagnoses or highly sensitive medical details.</li></ul><p class="notice">Cloud sync requires Firebase Authentication and Firestore to be configured and available. Firebase free quotas apply; no paid storage service is used.</p><div class="modal-actions"><button class="btn primary closeModal" type="button">Got it</button></div></div>
   </section>
@@ -205,7 +214,7 @@
   <script>
     (()=>{
       const STORE='calmroot-v1'; let selectedMood=''; let breathInterval=null, breathTimeout=null, breathRemaining=60, breathPhase=0;
-      const $=id=>document.getElementById(id); const dialogs=[$('breathDialog'),$('groundDialog'),$('privacyDialog')];
+      const $=id=>document.getElementById(id); const dialogs=[$('breathDialog'),$('groundDialog'),$('privacyDialog'),$('difficultDayDialog')];
       function toast(message){const el=$('toast');el.textContent=message;el.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.add('hidden'),2800)}
       function getData(){try{return JSON.parse(localStorage.getItem(STORE)||'{"moods":[],"notes":[]}')}catch{return {moods:[],notes:[]}}}
       function putData(data){try{localStorage.setItem(STORE,JSON.stringify(data));if(window.calmrootCloud?.user)window.calmrootCloud.saveData(data).catch(()=>toast('Saved on this device, but cloud sync failed. Check your connection.'));return true}catch{toast('Storage is unavailable. You can still use the exercises without saving.');return false}}
@@ -213,6 +222,10 @@
       function closeDialogs(){dialogs.forEach(d=>d.classList.add('hidden'));document.body.style.overflow='';stopBreathing();}
       document.querySelectorAll('.closeModal').forEach(b=>b.addEventListener('click',closeDialogs));dialogs.forEach(d=>d.addEventListener('click',e=>{if(e.target===d)closeDialogs()}));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDialogs()});
       $('privacyBtn').addEventListener('click',()=>openDialog($('privacyDialog')));$('aboutBtn').addEventListener('click',()=>openDialog($('privacyDialog')));
+      $('openDifficultDay').addEventListener('click',()=>openDialog($('difficultDayDialog')));$('topHelpBtn').addEventListener('click',()=>openDialog($('difficultDayDialog')));
+      $('difficultBreathe').addEventListener('click',()=>{closeDialogs();breathOpen()});
+      $('difficultGround').addEventListener('click',()=>{closeDialogs();openDialog($('groundDialog'))});
+      $('difficultKindness').addEventListener('click',()=>{closeDialogs();$('catMessage').textContent='You do not have to handle everything at once. You deserve patience and support, exactly as you are.';$('affirmationText').textContent='I am allowed to have hard feelings and still treat myself with kindness.';$('catTitle').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});toast('A gentle reminder is here. Keep it or skip it.');});
       const catMessages=['You don’t have to fix the whole day. One gentle moment is enough.','Rest is allowed. You do not have to earn it.','A feeling can be strong and still pass. Take your time.','You deserve kindness, including from yourself.','Small steps count, even when nobody else sees them.','You can pause, drink some water, and begin again when you’re ready.'];let lastCat=-1;$('catComfort').addEventListener('click',()=>{let next;do{next=Math.floor(Math.random()*catMessages.length)}while(next===lastCat);lastCat=next;$('catMessage').textContent=catMessages[next];toast('Moss is here for a gentle moment.');});
       const affirmations=[
         'My worth is not measured by my hair, my appearance, or how confident I feel today.',
