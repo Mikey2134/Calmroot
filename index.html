@@ -50,6 +50,10 @@
     /* Daily mood calendar */
     .calendar-card{margin-top:18px}.calendar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.calendar-nav{display:flex;align-items:center;gap:8px}.calendar-nav button{border:1px solid var(--line);background:#fffdf9;color:var(--green-dark);border-radius:12px;padding:8px 12px}.calendar-month{font-weight:750;min-width:145px;text-align:center}.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:14px}.calendar-weekday{text-align:center;color:var(--muted);font-size:.78rem;padding:5px 0}.calendar-day{min-height:66px;border:1px solid var(--line);border-radius:12px;background:#fffdf9;color:var(--ink);padding:6px 2px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px}.calendar-day:disabled{opacity:.3}.calendar-day.today{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}.calendar-day.selected{background:#eaf2e6;border:2px solid var(--green-dark)}.calendar-day .day-number{font-size:.84rem}.calendar-marks{font-size:.75rem;line-height:1.1;letter-spacing:-2px;white-space:nowrap}.calendar-legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.8rem;margin-top:12px}.calendar-detail{margin-top:16px;padding:14px;background:#f7f4ed;border-radius:15px}.calendar-detail h4{margin:0 0 8px}.calendar-mood-entry{padding:8px 0;border-top:1px solid var(--line);font-size:.9rem}.calendar-mood-entry:first-of-type{border-top:0}.calendar-mood-entry p{margin:3px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted)}@media(max-width:420px){.calendar-grid{gap:3px}.calendar-day{min-height:54px;border-radius:8px}.calendar-marks{font-size:.65rem}}
 
+  
+    /* Gentle daily routines */
+    .routine-card{margin-top:18px}.routine-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.routine-date{font-size:.85rem;color:var(--muted);background:#f0f4ec;border-radius:999px;padding:6px 11px}.routine-habits{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;margin:12px 0}.routine-habit{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:15px;padding:12px;background:#fffdf9}.routine-habit input{accent-color:var(--green);width:18px;height:18px;flex-shrink:0}.routine-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.routine-summary{margin-top:12px;padding:12px 14px;background:#f0f4ec;border-radius:15px;color:var(--green-dark)}
+
   </style>
 </head>
 <body>
@@ -142,6 +146,25 @@
       <div class="calendar-detail" id="calendarDetail" aria-live="polite"><h4>Select a date</h4><p class="empty">Choose any day to see mood check-ins saved for it.</p></div>
     </section>
 
+    <section class="card routine-card" aria-labelledby="routineTitle">
+      <div class="routine-head"><div><h2 class="panel-title" id="routineTitle">Gentle daily routine</h2><p class="hint">Tiny acts of care, not rules. Choose what feels possible today; skipping anything is okay.</p></div><span class="routine-date" id="routineDate"></span></div>
+      <div class="routine-habits" role="group" aria-label="Optional daily self-care habits">
+        <label class="routine-habit"><input type="checkbox" data-routine="water"> <span>💧 Drink some water</span></label>
+        <label class="routine-habit"><input type="checkbox" data-routine="movement"> <span>🌿 Stretch or move a little</span></label>
+        <label class="routine-habit"><input type="checkbox" data-routine="rest"> <span>☁️ Take a real pause</span></label>
+        <label class="routine-habit"><input type="checkbox" data-routine="food"> <span>🍲 Eat something nourishing</span></label>
+        <label class="routine-habit"><input type="checkbox" data-routine="connection"> <span>💌 Connect with someone</span></label>
+        <label class="routine-habit"><input type="checkbox" data-routine="kindness"> <span>🐾 Do one kind thing for myself</span></label>
+      </div>
+      <div class="routine-fields">
+        <div class="field"><label for="routineSleep">How was your sleep?</label><select id="routineSleep"><option value="">Skip for today</option><option value="restful">Restful</option><option value="okay">Okay</option><option value="rough">A little rough</option></select></div>
+        <div class="field"><label for="routineEnergy">Energy level</label><select id="routineEnergy"><option value="">Skip for today</option><option value="low">Low</option><option value="steady">Steady</option><option value="high">High</option></select></div>
+      </div>
+      <div class="field"><label for="routineIntention">One small intention (optional)</label><input id="routineIntention" maxlength="180" placeholder="e.g. Take things one step at a time"/></div>
+      <button class="btn primary" type="button" id="saveRoutine">Save today's routine</button>
+      <div class="routine-summary" id="routineSummary" aria-live="polite">Your routine is yours to shape. You can save just one small thing—or nothing at all.</div>
+    </section>
+
     <section class="cat-companion" aria-labelledby="catTitle">
       <div class="cat-avatar" aria-hidden="true"><span>🐈</span><i>♡</i></div>
       <div><h3 id="catTitle">Moss, your calm companion</h3><p id="catMessage" aria-live="polite">You don't have to fix the whole day. Let's take one gentle moment at a time.</p><p class="share-note">Moss offers encouragement, not medical advice. When signed in, saved reflections sync to your Firebase account. The project owner administers that database; see Privacy &amp; safety for details.</p></div>
@@ -219,6 +242,25 @@
       function toast(message){const el=$('toast');el.textContent=message;el.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.add('hidden'),2800)}
       function getData(){try{return JSON.parse(localStorage.getItem(STORE)||'{"moods":[],"notes":[]}')}catch{return {moods:[],notes:[]}}}
       function putData(data){try{localStorage.setItem(STORE,JSON.stringify(data));if(window.calmrootCloud?.user)window.calmrootCloud.saveData(data).catch(()=>toast('Saved on this device, but cloud sync failed. Check your connection.'));return true}catch{toast('Storage is unavailable. You can still use the exercises without saving.');return false}}
+      // Daily routine entries live in the same existing app-data object as moods and notes,
+      // so the current local storage and Firebase sync flow are reused without resetting data.
+      function localDateKey(date=new Date()){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0')}
+      function loadTodayRoutine(){
+        const today=localDateKey(); $('routineDate').textContent=new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+        const d=getData(), entry=(d.routines||{})[today]||{};
+        document.querySelectorAll('[data-routine]').forEach(el=>{el.checked=!!(entry.habits||[]).includes(el.dataset.routine)});
+        $('routineSleep').value=entry.sleep||''; $('routineEnergy').value=entry.energy||''; $('routineIntention').value=entry.intention||'';
+        const count=(entry.habits||[]).length;
+        $('routineSummary').textContent=entry.savedAt ? (count ? count+' small act'+(count===1?'':'s')+' of care checked off today. Every small step counts.' : 'Your check-in is saved. Showing up for yourself is enough, even without checking a task.') : 'Your routine is yours to shape. You can save just one small thing—or nothing at all.';
+      }
+      $('saveRoutine').addEventListener('click',()=>{
+        const d=getData(); if(!d.routines||typeof d.routines!=='object'||Array.isArray(d.routines))d.routines={};
+        const today=localDateKey(), habits=[...document.querySelectorAll('[data-routine]:checked')].map(el=>el.dataset.routine);
+        d.routines[today]={habits,sleep:$('routineSleep').value,energy:$('routineEnergy').value,intention:$('routineIntention').value.trim(),savedAt:new Date().toISOString()};
+        if(putData(d)){loadTodayRoutine();toast(window.calmrootCloud?.user?'Routine saved and syncing to your account.':'Routine saved on this device. Preview mode does not sync.');}
+      });
+      loadTodayRoutine();
+      window.addEventListener('calmroot-cloud-data-loaded',loadTodayRoutine);
       function openDialog(el){el.classList.remove('hidden');const focus=el.querySelector('button');if(focus)focus.focus();document.body.style.overflow='hidden'}
       function closeDialogs(){dialogs.forEach(d=>d.classList.add('hidden'));document.body.style.overflow='';stopBreathing();}
       document.querySelectorAll('.closeModal').forEach(b=>b.addEventListener('click',closeDialogs));dialogs.forEach(d=>d.addEventListener('click',e=>{if(e.target===d)closeDialogs()}));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDialogs()});
