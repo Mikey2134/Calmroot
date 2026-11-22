@@ -1,5 +1,5 @@
 // CALMROOT service worker — refresh stale HTML after deployments.
-const CACHE = 'calmroot-cache-v3';
+const CACHE = 'calmroot-cache-v4';
 const APP_FILES = ['./manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', event => {
