@@ -56,11 +56,11 @@
       <h1>Your quiet place to begin.</h1>
       <p>Take a breath. You can move at your own pace here, with Moss nearby.</p>
       <div style="display:grid;place-items:center;font-size:4.4rem;margin:16px 0 4px" aria-hidden="true">🐈</div><p class="cat-caption">Moss saved you a cozy little spot ♡</p>
-      <div id="googleButtonHost" class="google-button-host" aria-label="Continue with Google"></div>
-      <p id="googleStatus" class="small" style="text-align:center;margin:8px 0 0" role="status">Connecting to Google sign-in…</p>
+      <button class="google-btn" id="googleSignInBtn" type="button"><span class="google-g" aria-hidden="true">G</span> Continue with Google</button>
+      <p id="googleStatus" class="small" style="text-align:center;margin:8px 0 0" role="status">Connecting to secure Google sign-in…</p>
       <div class="auth-divider">or preview the app</div>
       <button class="btn primary" id="previewBtn" type="button" style="width:100%">Continue in preview mode</button>
-      <p class="auth-foot">Preview mode is not a real account or secure sign-in. Your profile and reflections stay in this browser. Do not use it for sensitive information on a shared device.</p>
+      <p class="auth-foot">Preview mode uses this browser only and will not sync to your account. Use Google sign-in for cloud sync. Avoid storing highly sensitive information.</p>
     </div>
     <form class="auth-card hidden" id="profileView">
       <div class="auth-brand"><img src="icon.svg" alt=""><span>CALMROOT</span></div>
@@ -71,7 +71,7 @@
       <div class="field"><label for="profileName">What should we call you? *</label><input id="profileName" name="profileName" maxlength="60" autocomplete="nickname" required placeholder="Your preferred name"></div>
       <div class="field"><label for="profileAge">Age range (optional)</label><select id="profileAge" name="profileAge"><option value="">Prefer not to say</option><option>Under 13</option><option>13–17</option><option>18–24</option><option>25–34</option><option>35–44</option><option>45+</option></select></div>
       <div class="field"><label for="profileGoal">What would you like help with? (optional)</label><select id="profileGoal" name="profileGoal"><option value="">Choose if you like</option><option>Stress and anxiety</option><option>Finding a moment of calm</option><option>Building a gentle routine</option><option>Hair and scalp wellbeing support</option><option>Just exploring</option></select></div>
-      <label class="consent-row"><input id="profileConsent" type="checkbox" required><span>I understand my profile details are saved in this browser only, not in a central cloud account. *</span></label>
+      <label class="consent-row"><input id="profileConsent" type="checkbox" required><span>I understand my profile, mood check-ins and journal notes will be stored in my Google Firebase account when signed in. The CALMROOT project owner technically administers the database. Preview mode stores data only in this browser. *</span></label>
       <div class="auth-actions"><button class="btn primary" type="submit">Save profile and enter CALMROOT</button><button class="btn secondary" id="backToLogin" type="button">Back</button></div>
       <p class="auth-foot">CALMROOT is a wellbeing tool, not a medical service. Do not enter diagnoses or other sensitive medical details here.</p>
     </form>
@@ -80,7 +80,7 @@
   <main class="shell">
     <header class="topbar">
       <div class="brand"><img src="icon.svg" alt=""><span>CALMROOT</span></div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="pill hidden" id="profileChip"></span><button class="pill" id="editProfileBtn" type="button">Profile</button><button class="pill" id="privacyBtn" type="button" aria-haspopup="dialog">🔒 Your private space</button></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="pill hidden" id="profileChip"></span><button class="pill" id="editProfileBtn" type="button">Profile</button><button class="pill" id="syncAccountBtn" type="button">Sign in / Sync</button><button class="pill" id="privacyBtn" type="button" aria-haspopup="dialog">🔒 Your private space</button></div>
     </header>
     <section class="hero" aria-labelledby="hero-title">
       <div>
@@ -146,16 +146,43 @@
     <div class="modal"><div class="eyebrow">Come back to the present</div><h2 id="groundTitle">The 5–4–3–2–1 grounding exercise</h2><p class="hint">Move through these gently. You can keep your eyes open and skip any step that doesn't suit you.</p><ol class="ground-steps"><li><b>5 things</b> you can see around you.</li><li><b>4 things</b> you can feel (your feet on the floor, fabric, or the chair).</li><li><b>3 things</b> you can hear.</li><li><b>2 things</b> you can smell, or two scents you like to imagine.</li><li><b>1 thing</b> you can taste, or one kind thing you can tell yourself.</li></ol><p class="small">You don't have to get it perfect. If focusing on senses feels uncomfortable, simply name where you are and today's date.</p><div class="modal-actions"><button class="btn primary closeModal" type="button">I'm ready</button></div></div>
   </section>
   <section id="privacyDialog" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
-    <div class="modal"><div class="eyebrow">Your privacy matters</div><h2 id="privacyTitle">Your private space</h2><p>In this first version, mood check-ins and notes are stored in this browser on this device using local storage. They are not sent to a CALMROOT server because this app has no server or account system.</p><ul><li>Anyone who can unlock your device or use this browser profile may be able to see saved entries.</li><li>Private browsing, clearing browser data, or some device settings may remove entries.</li><li>Export creates a file on your device. Be thoughtful about where you keep or share it.</li><li>This prototype does not yet include working Google sign-in, a central database, analytics, advertising, or cloud sync. The preview profile is stored locally in this browser.</li></ul><p class="notice">For highly sensitive information, consider not saving it on a shared device. This is a prototype, not a clinically validated product.</p><div class="modal-actions"><button class="btn primary closeModal" type="button">Got it</button></div></div>
+    <div class="modal"><div class="eyebrow">Your privacy matters</div><h2 id="privacyTitle">Your private space</h2><p>When you use Google sign-in, CALMROOT uses Firebase Authentication and Cloud Firestore to sync your profile, mood check-ins and journal notes to your user account. Preview mode stays in this browser and does not sync.</p><ul><li>Firestore rules are intended to let each signed-in user access only their own records.</li><li>The project owner administers the Firebase project and may technically access database records through project-level tools, so do not enter information you would not want the service operator to handle.</li><li>Export creates a JSON file on your device. Keep it somewhere private.</li><li>Deleting cloud data requires an internet connection. Clearing browser data does not delete cloud records.</li><li>This is a wellbeing tool, not a medical service. Avoid diagnoses or highly sensitive medical details.</li></ul><p class="notice">Cloud sync requires Firebase Authentication and Firestore to be configured and available. Firebase free quotas apply; no paid storage service is used.</p><div class="modal-actions"><button class="btn primary closeModal" type="button">Got it</button></div></div>
   </section>
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+    import { getFirestore, doc, getDoc, setDoc, deleteField } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+    const firebaseConfig = {
+      apiKey: 'AIzaSyBDnfNLSQrib5pSOTfHKnS1LCKvY_zFlxE',
+      authDomain: 'healthy-maaoo.firebaseapp.com',
+      projectId: 'healthy-maaoo',
+      storageBucket: 'healthy-maaoo.firebasestorage.app',
+      messagingSenderId: '936888106668',
+      appId: '1:936888106668:web:b820a520fc94a02eeb6909',
+      measurementId: 'G-0N0SHTCQEJ'
+    };
+    try {
+      const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app), provider=new GoogleAuthProvider();
+      await setPersistence(auth,browserLocalPersistence);
+      const userDoc=()=>{if(!auth.currentUser)throw new Error('Sign in first');return doc(db,'users',auth.currentUser.uid)};
+      window.calmrootCloud={get user(){return auth.currentUser},signIn:async()=>{const r=await signInWithPopup(auth,provider);return r.user},signOut:()=>signOut(auth),
+        loadProfile:async()=>{const s=await getDoc(userDoc());return s.exists()?s.data().profile||null:null},
+        saveProfile:async profile=>setDoc(userDoc(),{profile,updatedAt:new Date().toISOString()},{merge:true}),
+        loadData:async()=>{const s=await getDoc(userDoc());return s.exists()?s.data().appData||null:null},
+        saveData:async appData=>setDoc(userDoc(),{appData,updatedAt:new Date().toISOString()},{merge:true}),
+        deleteData:async()=>setDoc(userDoc(),{appData:{moods:[],notes:[]},updatedAt:new Date().toISOString()},{merge:true})};
+      onAuthStateChanged(auth,async user=>{if(user){try{const snap=await getDoc(userDoc());if(snap.exists()){const d=snap.data();if(d.profile)localStorage.setItem('calmroot-profile-v1',JSON.stringify({...d.profile,email:user.email||d.profile.email,mode:'firebase'}));if(d.appData)localStorage.setItem('calmroot-v1',JSON.stringify(d.appData));window.dispatchEvent(new CustomEvent('calmroot-cloud-data-loaded',{detail:{data:d.appData||null}}))}}catch(e){console.warn('CALMROOT cloud sync:',e)}}});
+      window.dispatchEvent(new Event('calmroot-cloud-ready'));
+    } catch (e) { console.error('CALMROOT Firebase setup failed:',e); const status=document.getElementById('googleStatus');if(status)status.textContent='Firebase setup could not start. Check the configuration and browser connection.'; }
+  </script>
   <script>
     (()=>{
       const STORE='calmroot-v1'; let selectedMood=''; let breathInterval=null, breathTimeout=null, breathRemaining=60, breathPhase=0;
       const $=id=>document.getElementById(id); const dialogs=[$('breathDialog'),$('groundDialog'),$('privacyDialog')];
       function toast(message){const el=$('toast');el.textContent=message;el.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.add('hidden'),2800)}
       function getData(){try{return JSON.parse(localStorage.getItem(STORE)||'{"moods":[],"notes":[]}')}catch{return {moods:[],notes:[]}}}
-      function putData(data){try{localStorage.setItem(STORE,JSON.stringify(data));return true}catch{toast('Storage is unavailable. You can still use the exercises without saving.');return false}}
+      function putData(data){try{localStorage.setItem(STORE,JSON.stringify(data));if(window.calmrootCloud?.user)window.calmrootCloud.saveData(data).catch(()=>toast('Saved on this device, but cloud sync failed. Check your connection.'));return true}catch{toast('Storage is unavailable. You can still use the exercises without saving.');return false}}
       function openDialog(el){el.classList.remove('hidden');const focus=el.querySelector('button');if(focus)focus.focus();document.body.style.overflow='hidden'}
       function closeDialogs(){dialogs.forEach(d=>d.classList.add('hidden'));document.body.style.overflow='';stopBreathing();}
       document.querySelectorAll('.closeModal').forEach(b=>b.addEventListener('click',closeDialogs));dialogs.forEach(d=>d.addEventListener('click',e=>{if(e.target===d)closeDialogs()}));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDialogs()});
@@ -171,52 +198,27 @@
       $('breathStop').addEventListener('click',()=>{stopBreathing();$('breathCue').textContent='Ready when you are';$('breathTimer').textContent='60 seconds';$('breathStart').textContent='Start';$('breathStart').disabled=false;closeDialogs()});
       $('breathDialog').addEventListener('click',()=>{if(!breathInterval){$('breathStart').textContent='Start';$('breathStart').disabled=false}});
       document.querySelectorAll('[data-mood]').forEach(b=>b.addEventListener('click',()=>{selectedMood=b.dataset.mood;document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))}));
-      $('saveMood').addEventListener('click',()=>{if(!selectedMood){toast('Choose a feeling first, or skip this check-in.');return}const d=getData();d.moods.unshift({id:Date.now(),mood:selectedMood,note:$('moodNote').value.trim(),date:new Date().toISOString()});d.moods=d.moods.slice(0,100);if(putData(d)){selectedMood='';document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed','false'));$('moodNote').value='';renderEntries();toast('Check-in saved on this device. Thank you for checking in with yourself.')}});
-      $('saveJournal').addEventListener('click',()=>{const value=$('journalText').value.trim();if(!value){toast('Write a few words first, or leave it for another time.');return}const d=getData();d.notes.unshift({id:Date.now(),text:value,date:new Date().toISOString()});d.notes=d.notes.slice(0,100);if(putData(d)){$('journalText').value='';renderEntries();toast('Your note was saved on this device.')}});
+      $('saveMood').addEventListener('click',()=>{if(!selectedMood){toast('Choose a feeling first, or skip this check-in.');return}const d=getData();d.moods.unshift({id:Date.now(),mood:selectedMood,note:$('moodNote').value.trim(),date:new Date().toISOString()});d.moods=d.moods.slice(0,100);if(putData(d)){selectedMood='';document.querySelectorAll('[data-mood]').forEach(x=>x.setAttribute('aria-pressed','false'));$('moodNote').value='';renderEntries();toast(window.calmrootCloud?.user?'Check-in saved and syncing to your account.':'Check-in saved on this device. Preview mode does not sync.')}});
+      $('saveJournal').addEventListener('click',()=>{const value=$('journalText').value.trim();if(!value){toast('Write a few words first, or leave it for another time.');return}const d=getData();d.notes.unshift({id:Date.now(),text:value,date:new Date().toISOString()});d.notes=d.notes.slice(0,100);if(putData(d)){$('journalText').value='';renderEntries();toast(window.calmrootCloud?.user?'Your note was saved and is syncing to your account.':'Your note was saved on this device. Preview mode does not sync.')}});
       function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
       function renderEntries(){const d=getData(),el=$('entryList'),items=[...d.moods.map(x=>({...x,type:'mood'})),...d.notes.map(x=>({...x,type:'note'}))].sort((a,b)=>b.id-a.id).slice(0,8);if(!items.length){el.innerHTML='<p class="empty">Nothing saved yet. That\'s okay.</p>';return}el.innerHTML=items.map(x=>`<div class="entry"><time>${new Date(x.date).toLocaleString()} · ${x.type==='mood'?'Check-in':'Note'}</time><p>${x.type==='mood'?'Feeling: '+escapeHTML(x.mood)+(x.note?' — '+escapeHTML(x.note):''):escapeHTML(x.text)}</p></div>`).join('')}
       $('exportData').addEventListener('click',()=>{const data=getData();const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='calmroot-my-data.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);toast('Export prepared. Keep the file somewhere private.')});
-      $('deleteData').addEventListener('click',()=>{if(confirm('Delete all CALMROOT check-ins and notes saved in this browser? This cannot be undone.')){localStorage.removeItem(STORE);renderEntries();toast('Saved CALMROOT data deleted from this browser.')}});
+      $('deleteData').addEventListener('click',async()=>{if(confirm('Delete all CALMROOT check-ins and notes saved in this browser'+(window.calmrootCloud?.user?' and your cloud account':'')+'? This cannot be undone.')){localStorage.removeItem(STORE);if(window.calmrootCloud?.user){try{await window.calmrootCloud.deleteData()}catch{toast('Local data deleted, but cloud deletion failed. Reconnect and try again.');renderEntries();return}}renderEntries();toast('CALMROOT check-ins and notes deleted.')}});
 
-      // Google Identity Services sign-in. The ID token is decoded only to prefill the profile UI;
-      // a production backend must verify the token before treating the user as authenticated.
-      const GOOGLE_CLIENT_ID='825166852590-pkgm1lemiv9cp5v6ggijttbaru6gs2t8.apps.googleusercontent.com';
       const PROFILE_KEY='calmroot-profile-v1';
       const authShell=$('authShell'), loginView=$('loginView'), profileView=$('profileView');
       let googleProfile=null;
       function loadProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')}catch{return null}}
       function showProfileForm(){loginView.classList.add('hidden');profileView.classList.remove('hidden');$('profileName').focus()}
       function enterApp(profile){authShell.classList.add('hidden');$('profileChip').textContent='Hi, '+profile.name;$('profileChip').classList.remove('hidden');}
-      function startPreview(){const profile=loadProfile();if(profile){enterApp(profile)}else{showProfileForm()}}
-      function decodeGoogleCredential(credential){
-        const payload=credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
-        const binary=atob(payload);const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
-        return JSON.parse(new TextDecoder().decode(bytes));
-      }
-      function handleGoogleCredential(response){
-        try{
-          const data=decodeGoogleCredential(response.credential);
-          if(!data || !data.sub || !data.email){$('googleStatus').textContent='Google sign-in returned incomplete profile information. Please try again.';return}
-          googleProfile={name:data.name||data.given_name||'',email:data.email,picture:data.picture||''};
-          $('profileName').value=googleProfile.name;
-          $('googleAccountInfo').textContent='Signed in with Google as '+googleProfile.email+'. Your CALMROOT profile will still be saved locally in this browser.';
-          $('googleAccountInfo').classList.remove('hidden');
-          $('googleStatus').textContent='Google sign-in completed. Finish setting up your profile.';
-          showProfileForm();
-        }catch(err){$('googleStatus').textContent='Could not read Google sign-in details. Check your OAuth configuration and try again.';}
-      }
-      function setupGoogleSignIn(){
-        if(!window.google || !google.accounts || !google.accounts.id){$('googleStatus').textContent='Google sign-in could not load. Check your internet connection and try again.';return}
-        try{
-          google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleCredential,auto_select:false,context:'signin'});
-          google.accounts.id.renderButton($('googleButtonHost'),{type:'standard',theme:'outline',size:'large',shape:'pill',text:'continue_with',logo_alignment:'left',width:350});
-          $('googleStatus').textContent='Google sign-in is ready. It can prefill your profile; this prototype does not yet verify sign-in on a server.';
-        }catch(err){$('googleStatus').textContent='Google sign-in setup needs attention. Verify the client ID and authorized website origin.';}
-      }
-      const gisScript=document.createElement('script');gisScript.src='https://accounts.google.com/gsi/client';gisScript.async=true;gisScript.defer=true;gisScript.onload=setupGoogleSignIn;gisScript.onerror=()=>{$('googleStatus').textContent='Google sign-in script could not load. Check your internet connection.'};document.head.appendChild(gisScript);
+      function startPreview(){window.calmrootCloud?.signOut().catch(()=>{});const profile=loadProfile();if(profile){enterApp(profile)}else{googleProfile=null;$('googleAccountInfo').classList.add('hidden');showProfileForm()}}
+      $('googleSignInBtn').addEventListener('click',async()=>{if(!window.calmrootCloud){$('googleStatus').textContent='Firebase is still loading. Please try again in a moment.';return}try{const user=await window.calmrootCloud.signIn();googleProfile={name:user.displayName||'',email:user.email||'',uid:user.uid};$('profileName').value=googleProfile.name;$('googleAccountInfo').textContent='Signed in with Google as '+googleProfile.email+'. Your data will sync to your CALMROOT account after you save your profile.';$('googleAccountInfo').classList.remove('hidden');$('googleStatus').textContent='Secure Google sign-in successful. Finish setting up your profile.';const existing=await window.calmrootCloud.loadProfile();if(existing){Object.assign(existing,{email:user.email||existing.email,mode:'firebase'});localStorage.setItem(PROFILE_KEY,JSON.stringify(existing));$('profileName').value=existing.name||googleProfile.name;$('profileAge').value=existing.ageRange||'';$('profileGoal').value=existing.goal||'';$('profileConsent').checked=true;enterApp(existing);const data=await window.calmrootCloud.loadData();if(data){localStorage.setItem(STORE,JSON.stringify(data));renderEntries()}toast('Welcome back. Your cloud data is synced.')}else{showProfileForm()}}catch(err){$('googleStatus').textContent=err?.code==='auth/unauthorized-domain'?'This website domain is not authorized in Firebase Authentication settings.':(err?.message||'Google sign-in failed. Check Firebase settings and try again.')}});
+      window.addEventListener('calmroot-cloud-ready',()=>{$('googleStatus').textContent='Secure Google sign-in is ready.'});
+      window.addEventListener('calmroot-cloud-data-loaded',e=>{if(e.detail?.data){localStorage.setItem(STORE,JSON.stringify(e.detail.data));renderEntries()}});
+      $('syncAccountBtn').addEventListener('click',()=>{if(window.calmrootCloud?.user){toast('You are signed in. Your saved changes sync automatically.')}else{authShell.classList.remove('hidden');loginView.classList.remove('hidden');profileView.classList.add('hidden')}});
       $('previewBtn').addEventListener('click',startPreview);
       $('backToLogin').addEventListener('click',()=>{profileView.classList.add('hidden');loginView.classList.remove('hidden')});
-      profileView.addEventListener('submit',e=>{e.preventDefault();if(!$('profileConsent').checked){toast('Please confirm the storage note to continue.');return}const profile={name:$('profileName').value.trim(),email:googleProfile?.email||'',ageRange:$('profileAge').value,goal:$('profileGoal').value,updatedAt:new Date().toISOString(),mode:googleProfile?'google-sign-in-local-profile':'preview-local'};if(!profile.name){$('profileName').focus();return}try{localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));enterApp(profile);toast('Profile saved in this browser.')}catch{toast('Could not save profile in this browser.')}});
+      profileView.addEventListener('submit',async e=>{e.preventDefault();if(!$('profileConsent').checked){toast('Please confirm the storage note to continue.');return}const user=window.calmrootCloud?.user;const profile={name:$('profileName').value.trim(),email:user?.email||googleProfile?.email||'',ageRange:$('profileAge').value,goal:$('profileGoal').value,updatedAt:new Date().toISOString(),mode:user?'firebase':'preview-local'};if(!profile.name){$('profileName').focus();return}try{localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));if(user){await window.calmrootCloud.saveProfile(profile);const data=await window.calmrootCloud.loadData();if(data){localStorage.setItem(STORE,JSON.stringify(data))}else{await window.calmrootCloud.saveData(getData())}}enterApp(profile);renderEntries();toast(user?'Profile saved to your CALMROOT cloud account.':'Profile saved in this browser. Preview mode does not sync.')}catch(err){toast('Could not save to cloud. Check your connection and Firestore rules, then try again.')}});
       $('editProfileBtn').addEventListener('click',()=>{const p=loadProfile();if(p){$('profileName').value=p.name||'';$('profileAge').value=p.ageRange||'';$('profileGoal').value=p.goal||'';$('profileConsent').checked=true;showProfileForm();authShell.classList.remove('hidden')}else{authShell.classList.remove('hidden');loginView.classList.add('hidden');profileView.classList.remove('hidden')}});
       // Require an explicit preview/profile step on first visit.
       if(loadProfile()){enterApp(loadProfile())}
