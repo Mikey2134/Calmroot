@@ -239,6 +239,28 @@
       <div class="field" style="margin-top:16px"><label>Your garden memories</label><div id="growthEntries" aria-live="polite"><p class="empty">Your first little memory can go here whenever you're ready.</p></div></div>
     </section>
 
+    <section class="card action-planner" aria-labelledby="actionPlannerTitle" style="margin-top:22px;background:linear-gradient(135deg,#f2f0fa,#edf4ed);border-color:#dedbed">
+      <div class="eyebrow">Practical support · One step at a time</div>
+      <h2 class="panel-title" id="actionPlannerTitle">When you feel stuck</h2>
+      <p class="hint">Choose what is getting in the way. CALMROOT will suggest one small, practical action—not another affirmation.</p>
+      <div class="field"><label for="stuckSituation">What do you need help with right now?</label>
+        <select id="stuckSituation">
+          <option value="overwhelmed">Everything feels like too much</option>
+          <option value="procrastinating">I keep putting something off</option>
+          <option value="decision">I can't decide what to do</option>
+          <option value="restless">I feel restless and can't settle</option>
+          <option value="connection">I need to reach out to someone</option>
+          <option value="sleep">My mind is busy before sleep</option>
+        </select>
+      </div>
+      <div class="routine-summary" id="actionSuggestion" aria-live="polite" style="background:#fffdf9;border:1px solid #dedbed;color:#3f4651;padding:16px;border-radius:15px">
+        <strong id="actionStepTitle">Make the next ten minutes smaller</strong>
+        <p id="actionStepText" style="margin:6px 0 0">Write down everything on your mind. Circle only one thing that genuinely needs attention today; leave the rest for later.</p>
+      </div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px"><button class="btn primary" type="button" id="anotherActionStep">Suggest another step</button><button class="btn secondary" type="button" id="actionDone">I tried this</button></div>
+      <p class="small" id="actionPlannerStatus" role="status" style="margin-bottom:0">Small actions count. You can change the situation or skip this tool at any time.</p>
+    </section>
+
     <section class="cat-companion" aria-labelledby="catTitle">
       <div class="cat-avatar" aria-hidden="true"><span>🐈</span><i>♡</i></div>
       <div><h3 id="catTitle">Moss, your calm companion</h3><p id="catMessage" aria-live="polite">You don't have to fix the whole day. Let's take one gentle moment at a time.</p><p class="share-note">Moss offers encouragement, not medical advice. When signed in, saved reflections sync to your Firebase account. The project owner administers that database; see Privacy &amp; safety for details.</p></div>
@@ -416,6 +438,44 @@
 
       $('exportData').addEventListener('click',()=>{const data=getData();const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='calmroot-my-data.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);toast('Export prepared. Keep the file somewhere private.')});
       $('deleteData').addEventListener('click',async()=>{if(confirm('Delete all CALMROOT check-ins, routines, morning and night rituals, sanctuary notes, growth garden memories and reflections saved in this browser'+(window.calmrootCloud?.user?' and your cloud account':'')+'? This cannot be undone.')){localStorage.removeItem(STORE);if(window.calmrootCloud?.user){try{await window.calmrootCloud.deleteData()}catch{toast('Local data deleted, but cloud deletion failed. Reconnect and try again.');renderEntries();return}}renderEntries();renderSanctuary();loadTodayRoutine();renderRitual('morning');renderRitual('night');renderGrowthGarden();toast('CALMROOT saved data deleted.')}});
+
+      const actionSteps={
+        overwhelmed:[
+          ['Make the next ten minutes smaller','Write down everything on your mind. Circle only one thing that genuinely needs attention today; leave the rest for later.'],
+          ['Clear one tiny surface','Choose one small area—a desk corner, your bag, or one browser tab. Spend three minutes resetting only that space.'],
+          ['Separate urgent from loud','Ask: “What has a real deadline, and what is simply demanding my attention?” Pick one realistic next move.']
+        ],
+        procrastinating:[
+          ['Start with two minutes','Open the task and do the smallest visible part: write a heading, read one paragraph, or gather the materials. You can stop after two minutes.'],
+          ['Define “finished enough”','Write one sentence describing what a usable first draft would look like. Work toward that—not perfection.'],
+          ['Remove one obstacle','Put your phone out of reach, open the needed file, or prepare the materials. Make starting easier than avoiding.']
+        ],
+        decision:[
+          ['Name the decision','Write the choice in one sentence, then list the two or three realistic options. Avoid solving every future possibility at once.'],
+          ['Choose a reversible next step','If it is safe to do so, try a small step that gives you more information without locking you into a final decision.'],
+          ['Use three criteria','Compare the options against what matters most: your wellbeing, practical constraints, and longer-term priorities.']
+        ],
+        restless:[
+          ['Change your physical state','Stand up, loosen your shoulders, and walk slowly for two minutes—or sit somewhere quieter if movement does not feel right.'],
+          ['Reduce incoming noise','Mute one nonessential notification and put one screen away for five minutes. Notice whether that changes how you feel.'],
+          ['Use a simple sensory reset','Name three things you can see and two sounds you can hear. Let your breathing stay natural; there is no need to force it.']
+        ],
+        connection:[
+          ['Send a low-pressure message','Try: “Hey, I’ve had a lot on my mind. Are you free to talk sometime today? No rush if not.”'],
+          ['Be specific about the support','Decide whether you want someone to listen, help solve a practical problem, or simply keep you company. Say which one if you reach out.'],
+          ['Choose a safe person','Think of someone who usually respects your boundaries. If the first person is unavailable, that does not mean you should handle everything alone.']
+        ],
+        sleep:[
+          ['Move tomorrow’s tasks onto paper','Write down the thoughts or tasks you fear forgetting, plus one next step for tomorrow. Then close the list.'],
+          ['Make the room a little quieter','Dim the screen, lower the light, and choose a calm, familiar activity for a few minutes. Do not pressure yourself to fall asleep instantly.'],
+          ['Take the struggle out of it','If you are getting more frustrated, pause the effort to force sleep. Rest quietly or do something low-stimulation until you feel sleepier.']
+        ]
+      };
+      let actionStepIndex=0;
+      function showActionStep(next=false){const key=$('stuckSituation').value,steps=actionSteps[key]||actionSteps.overwhelmed;if(next)actionStepIndex=(actionStepIndex+1)%steps.length;else actionStepIndex=0;$('actionStepTitle').textContent=steps[actionStepIndex][0];$('actionStepText').textContent=steps[actionStepIndex][1];$('actionPlannerStatus').textContent='One small step is enough to begin.';$('actionDone').textContent='I tried this'}
+      $('stuckSituation').addEventListener('change',()=>showActionStep(false));
+      $('anotherActionStep').addEventListener('click',()=>showActionStep(true));
+      $('actionDone').addEventListener('click',()=>{$('actionPlannerStatus').textContent='Nice work making space for one action. You can stop here, or choose another step if it helps.';$('actionDone').textContent='Done for now'});
 
       const PROFILE_KEY='calmroot-profile-v1';
       const authShell=$('authShell'), loginView=$('loginView'), profileView=$('profileView');
