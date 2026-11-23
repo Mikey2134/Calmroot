@@ -62,6 +62,13 @@
 
     .growth-card{margin-top:18px;background:linear-gradient(145deg,#f8f6e9,#eaf2e6);border:1px solid #dfe8d8}.garden-hero{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:16px;background:#ffffffa8;border-radius:20px;margin:14px 0}.garden-plant{font-size:2.6rem;letter-spacing:4px;min-width:90px;text-align:center;line-height:1.4}.garden-stats{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}.garden-stat{background:#fffdf9;border:1px solid var(--line);border-radius:14px;padding:9px 12px;min-width:82px;text-align:center}.garden-stat strong{display:block;font-size:1.2rem;color:var(--green-dark)}.garden-stat span{font-size:.75rem;color:var(--muted)}.growth-entry{padding:12px 0;border-top:1px solid var(--line)}.growth-entry:first-child{border-top:0}.growth-entry p{white-space:pre-wrap;overflow-wrap:anywhere;margin:5px 0}.growth-entry time{font-size:.78rem;color:var(--muted)}.growth-entry-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.growth-tag{display:inline-block;background:#e6eee0;color:#315241;padding:3px 8px;border-radius:999px;font-size:.75rem}
 
+
+    /* Midnight Sanctuary: scoped so the rest of CALMROOT keeps its existing look */
+    .sanctuary-card{background:radial-gradient(ellipse at 88% 0%,#34375c 0%,transparent 36%),linear-gradient(155deg,#171a2c,#20243a 72%,#25283e);border:1px solid #414563;color:#f0efff;box-shadow:0 18px 48px #11132635;position:relative;overflow:hidden}
+    .sanctuary-card:before{content:"✦   ·      ✧       ·   ✦";display:block;color:#b8b8e7;letter-spacing:.38em;font-size:.78rem;margin-bottom:15px;opacity:.85}
+    .sanctuary-card .eyebrow{color:#bfc2f5}.sanctuary-card .panel-title{font-family:Georgia,serif;font-size:1.65rem;font-weight:500;color:#fbf9ff}.sanctuary-card .hint,.sanctuary-card .small{color:#c0c3dc}.sanctuary-card .field label{color:#e7e6fb}.sanctuary-card .field input,.sanctuary-card .field textarea,.sanctuary-card .field select{background:#292d46;border-color:#4b506f;color:#f7f5ff}.sanctuary-card .field textarea::placeholder{color:#a7abc9}.sanctuary-card .primary{background:#aaa9e9;color:#17192c}.sanctuary-card .primary:hover{background:#c2c1ff}.sanctuary-card .secondary{background:#292d46;border-color:#505577;color:#ecebff}.sanctuary-card .routine-summary{background:#292d46;color:#e2e1ff;border:1px solid #454a68}.sanctuary-card .sanctuary-entry{border-color:#414563}.sanctuary-card .sanctuary-entry time{color:#b8bbd8}.sanctuary-card .sanctuary-entry p{color:#f1efff}.sanctuary-card .linkbtn{color:#d2d1ff}.sanctuary-card .empty{color:#c0c3dc}.sanctuary-card .small.privacy-note{border-top:1px solid #414563;padding-top:14px;margin-top:16px}
+    .sanctuary-card .routine-summary[aria-live]{color:#e4e3ff}
+
   </style>
 </head>
 <body>
@@ -111,7 +118,6 @@
 
     <div class="section-head"><div><h2>Choose what you need</h2><p>No streaks. No pressure. Just support for this moment.</p></div></div>
     <section class="grid" aria-label="Wellbeing tools">
-      <article class="card"><div class="card-icon cat-icon" aria-hidden="true">🐾</div><h3>Breathing space</h3><p>A gentle paced-breathing exercise. Stop whenever you want; comfortable, natural breathing is enough.</p><button class="btn secondary" id="openBreath" type="button">Begin breathing</button></article>
       <article class="card"><div class="card-icon cat-icon" aria-hidden="true">🐱</div><h3>Grounding exercise</h3><p>Bring attention back to the present with a simple 5–4–3–2–1 sensory check-in.</p><button class="btn secondary" id="openGrounding" type="button">Get grounded</button></article>
       <article class="card"><div class="card-icon" aria-hidden="true">♡</div><h3>Check in with yourself</h3><p>Name what you're feeling without judging it. You don't need to make it positive.</p><button class="btn secondary" id="focusMood" type="button">Check in</button></article>
     </section>
@@ -182,8 +188,8 @@
       <div class="ritual-pane" id="morningRitualPane">
         <h3>Good morning. There's no need to rush.</h3><p class="hint">Take around 5–10 minutes. Even one small step is enough.</p>
         <div class="ritual-checks" role="group" aria-label="Morning ritual steps">
-          <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="arrive"><span><strong>Arrive gently</strong><br><span class="small">Take three comfortable breaths and notice how you feel.</span></span></label>
-          <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="water"><span><strong>Offer your body some care</strong><br><span class="small">Drink a little water or stretch if that feels good.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="arrive"><span><strong>Arrive gently</strong><br><span class="small">Pause for a moment and notice how you feel.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="water"><span><strong>Notice what you need</strong><br><span class="small">Ask yourself what would support you today, without needing to act on it immediately.</span></span></label>
           <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="feeling"><span><strong>Name the feeling</strong><br><span class="small">Ask: “What am I carrying into this morning?” No need to change it.</span></span></label>
           <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="intention"><span><strong>Choose one gentle intention</strong><br><span class="small">Pick one small, realistic thing to give your attention to today.</span></span></label>
           <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="kindness"><span><strong>Leave room for something good</strong><br><span class="small">Name one small thing you might look forward to—or simply let the day unfold.</span></span></label>
@@ -199,7 +205,7 @@
           <label class="ritual-check"><input type="checkbox" data-ritual-step="night" value="win"><span><strong>Notice one small thing that went okay</strong><br><span class="small">It can be tiny, ordinary, or simply that you made it through.</span></span></label>
           <label class="ritual-check"><input type="checkbox" data-ritual-step="night" value="learning"><span><strong>Meet a hard moment with kindness</strong><br><span class="small">If something was difficult, ask what you needed—not what you did wrong.</span></span></label>
           <label class="ritual-check"><input type="checkbox" data-ritual-step="night" value="release"><span><strong>Set down one thing for tonight</strong><br><span class="small">You can return to it later. You don't have to carry it through the night.</span></span></label>
-          <label class="ritual-check"><input type="checkbox" data-ritual-step="night" value="rest"><span><strong>Make room for rest</strong><br><span class="small">Dim a light, put your phone aside for a moment, or get comfortable.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="night" value="rest"><span><strong>Close the day gently</strong><br><span class="small">Acknowledge that today is ending; anything unfinished can wait for another time.</span></span></label>
         </div>
         <div class="ritual-progress" aria-hidden="true"><span id="nightRitualProgress"></span></div><div class="ritual-footer"><span class="small" id="nightRitualCount" aria-live="polite">0 of 5 steps chosen</span></div>
         <div class="field"><label for="nightRitualReflection">A few words before rest (optional)</label><textarea id="nightRitualReflection" maxlength="1200" rows="3" placeholder="One thing I want to acknowledge, and one thing I can leave until tomorrow…"></textarea></div>
@@ -209,9 +215,9 @@
     </section>
 
     <section class="card sanctuary-card" aria-labelledby="sanctuaryTitle">
-      <div class="eyebrow">A space just for you</div>
-      <h2 class="panel-title" id="sanctuaryTitle">Private Sanctuary</h2>
-      <p class="hint">No lock or extra steps—just a quiet place to put feelings into words. You can write an unsent letter, let something out, or leave the page blank.</p>
+      <div class="eyebrow">☾ YOUR QUIET CORNER · NO NEED TO PRETEND</div>
+      <h2 class="panel-title" id="sanctuaryTitle">My Sanctuary</h2>
+      <p class="hint">A midnight-soft place to be honest, breathe, and let healing happen at its own pace. Nothing here needs to be polished, solved, or sent.</p>
       <div class="field"><label for="sanctuaryPrompt">What would help right now?</label>
         <select id="sanctuaryPrompt"><option value="free">Write freely</option><option value="unsent">An unsent letter</option><option value="release">Something I need to let go of</option><option value="comfort">What I wish someone understood</option></select>
       </div>
@@ -219,7 +225,7 @@
       <div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn primary" type="button" id="saveSanctuary">Save to my sanctuary</button><button class="btn secondary" type="button" id="clearSanctuary">Clear the page</button></div>
       <div class="routine-summary" id="sanctuaryStatus" aria-live="polite">You don't have to send what you write. This space is for you.</div>
       <div class="field"><label>Your saved sanctuary notes</label><div id="sanctuaryEntries" aria-live="polite"><p class="empty">Nothing saved here yet. That's okay.</p></div></div>
-      <p class="small">Privacy note: when signed in, saved sanctuary notes sync with your CALMROOT Firebase account, which the project owner administers. This is not an encrypted or locked vault; avoid storing details you need to keep strictly confidential.</p>
+      <p class="small privacy-note">Privacy note: when signed in, saved sanctuary notes sync with your CALMROOT Firebase account, which the project owner administers. This is not an encrypted or locked vault; avoid storing details you need to keep strictly confidential.</p>
     </section>
 
 
@@ -248,19 +254,6 @@
         <div class="affirmation-actions"><button class="btn primary" id="nextAffirmation" type="button">Another reminder</button><button class="btn secondary" id="reflectAffirmation" type="button">Reflect privately</button></div>
         <p class="small" style="margin-top:14px">Keep what feels supportive and skip anything that doesn't fit. You don't have to force positivity.</p>
       </article>
-      <article class="rough-card" aria-labelledby="roughDayTitle">
-        <div class="card-icon" aria-hidden="true">🌿</div>
-        <h3 id="roughDayTitle">On a difficult day</h3>
-        <p>There is no need to explain or fix everything. Choose one small kind thing for this moment.</p>
-        <div class="rough-actions"><button class="btn secondary" id="roughBreathing" type="button">Try a gentle breathing pause</button><button class="btn secondary" id="roughGrounding" type="button">Help me feel grounded</button><button class="btn secondary" id="roughComfort" type="button">Give me a kind reminder</button></div>
-      </article>
-    </section>
-
-    <div class="section-head"><div><h2>Small reminders</h2><p>Not rules. Just gentle possibilities.</p></div></div>
-    <section class="grid">
-      <article class="card"><div class="card-icon cat-icon" aria-hidden="true">😺</div><h3>Make it smaller</h3><p>You only need to choose the next manageable step, not solve the whole day.</p></article>
-      <article class="card"><div class="card-icon cat-icon" aria-hidden="true">🐾</div><h3>Care for your body</h3><p>Water, food, rest, and a little movement can be supportive basics—not a cure-all.</p></article>
-      <article class="card"><div class="card-icon cat-icon" aria-hidden="true">🐈</div><h3>You can ask for help</h3><p>A trusted person or qualified mental-health professional can help when things feel heavy.</p></article>
     </section>
     <div class="notice" style="margin-top:20px"><strong>A gentle health note:</strong> CALMROOT is a wellbeing tool, not a diagnosis or treatment. Stress can affect people differently; this app cannot determine what causes hair loss or prevent alopecia areata. A dermatologist can assess hair loss, and a mental-health professional can support ongoing anxiety. If breathing exercises make you dizzy or more anxious, stop and breathe normally.</div>
     <footer class="footer"><div><strong>CALMROOT</strong><br>Made for small moments of steadiness. You deserve care, even on difficult days.</div><div><button class="linkbtn" id="aboutBtn" type="button">Privacy & safety</button><br><span>Works in a modern browser. Installable on supported Android devices.</span></div></footer>
@@ -356,11 +349,8 @@
       ];let lastAffirmation=0;
       $('nextAffirmation').addEventListener('click',()=>{let next;do{next=Math.floor(Math.random()*affirmations.length)}while(next===lastAffirmation&&affirmations.length>1);lastAffirmation=next;$('affirmationText').textContent=affirmations[next]});
       $('reflectAffirmation').addEventListener('click',()=>{const prompt='What would I say to someone I care about who felt this way?';$('journalPanel').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});if(!$('journalText').value.trim())$('journalText').value=prompt+'\n\n';$('journalText').focus();toast('A private reflection prompt is ready. Save it only if you want to.')});
-      $('roughBreathing').addEventListener('click',breathOpen);
-      $('roughGrounding').addEventListener('click',()=>openDialog($('groundDialog')));
-      $('roughComfort').addEventListener('click',()=>{let next;do{next=Math.floor(Math.random()*affirmations.length)}while(next===lastAffirmation&&affirmations.length>1);lastAffirmation=next;$('affirmationText').textContent=affirmations[next];$('affirmationText').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});toast('A kind reminder is here. Keep it or skip it.')});
       function breathOpen(){breathRemaining=60;$('breathTimer').textContent='60 seconds';$('breathCue').textContent='Ready when you are';$('breathOrb').className='breath-orb';openDialog($('breathDialog'))}
-      $('openBreath').addEventListener('click',breathOpen);$('startBreathing').addEventListener('click',breathOpen);
+      $('startBreathing').addEventListener('click',breathOpen);
       $('openGrounding').addEventListener('click',()=>openDialog($('groundDialog')));
       $('focusMood').addEventListener('click',()=>{$('moodPanel').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});$('moodNote').focus()});
       function stopBreathing(){if(breathInterval)clearInterval(breathInterval);if(breathTimeout)clearTimeout(breathTimeout);breathInterval=null;breathTimeout=null;$('breathOrb').className='breath-orb'}
