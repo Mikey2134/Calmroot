@@ -57,6 +57,9 @@
 
 
     /* My Growth Garden */
+
+    .rituals-card{margin-top:18px;background:linear-gradient(145deg,#fbf7ef,#edf3e9);border:1px solid #e2e8dc}.ritual-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.ritual-tab{border:1px solid var(--line);background:#fffdf8;color:var(--green-dark);border-radius:999px;padding:9px 15px;font-weight:700}.ritual-tab[aria-pressed="true"]{background:var(--green);color:white;border-color:var(--green)}.ritual-pane{background:#ffffffb8;border:1px solid var(--line);border-radius:19px;padding:17px}.ritual-checks{display:grid;gap:9px;margin:14px 0}.ritual-check{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border-radius:13px;background:#fffefb;border:1px solid var(--line)}.ritual-check input{accent-color:var(--green);width:18px;height:18px;margin-top:3px;flex-shrink:0}.ritual-progress{height:7px;background:#e5eadd;border-radius:99px;overflow:hidden;margin:12px 0}.ritual-progress span{display:block;height:100%;width:0;background:#789775;border-radius:99px;transition:width .2s}.ritual-footer{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.ritual-footer .btn{flex:0 0 auto}@media(prefers-reduced-motion:reduce){.ritual-progress span{transition:none}}
+
     .growth-card{margin-top:18px;background:linear-gradient(145deg,#f8f6e9,#eaf2e6);border:1px solid #dfe8d8}.garden-hero{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:16px;background:#ffffffa8;border-radius:20px;margin:14px 0}.garden-plant{font-size:2.6rem;letter-spacing:4px;min-width:90px;text-align:center;line-height:1.4}.garden-stats{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}.garden-stat{background:#fffdf9;border:1px solid var(--line);border-radius:14px;padding:9px 12px;min-width:82px;text-align:center}.garden-stat strong{display:block;font-size:1.2rem;color:var(--green-dark)}.garden-stat span{font-size:.75rem;color:var(--muted)}.growth-entry{padding:12px 0;border-top:1px solid var(--line)}.growth-entry:first-child{border-top:0}.growth-entry p{white-space:pre-wrap;overflow-wrap:anywhere;margin:5px 0}.growth-entry time{font-size:.78rem;color:var(--muted)}.growth-entry-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.growth-tag{display:inline-block;background:#e6eee0;color:#315241;padding:3px 8px;border-radius:999px;font-size:.75rem}
 
   </style>
@@ -168,6 +171,41 @@
       <div class="field"><label for="routineIntention">One small intention (optional)</label><input id="routineIntention" maxlength="180" placeholder="e.g. Take things one step at a time"/></div>
       <button class="btn primary" type="button" id="saveRoutine">Save today's routine</button>
       <div class="routine-summary" id="routineSummary" aria-live="polite">Your routine is yours to shape. You can save just one small thing—or nothing at all.</div>
+    </section>
+
+
+    <section class="card rituals-card" aria-labelledby="ritualsTitle">
+      <div class="eyebrow">A soft start · A gentle close</div>
+      <h2 class="panel-title" id="ritualsTitle">Morning &amp; Night Rituals</h2>
+      <p class="hint">A few minutes to meet yourself where you are. Choose what feels kind, leave anything that doesn't fit, and remember: this is care, not a test.</p>
+      <div class="ritual-tabs" role="group" aria-label="Choose a ritual"><button class="ritual-tab" type="button" data-ritual-tab="morning" aria-pressed="true">☀️ Morning</button><button class="ritual-tab" type="button" data-ritual-tab="night" aria-pressed="false">🌙 Night</button></div>
+      <div class="ritual-pane" id="morningRitualPane">
+        <h3>Good morning. There's no need to rush.</h3><p class="hint">Take around 5–10 minutes. Even one small step is enough.</p>
+        <div class="ritual-checks" role="group" aria-label="Morning ritual steps">
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="arrive"><span><strong>Arrive gently</strong><br><span class="small">Take three comfortable breaths and notice how you feel.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="water"><span><strong>Offer your body some care</strong><br><span class="small">Drink a little water or stretch if that feels good.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="feeling"><span><strong>Name the feeling</strong><br><span class="small">Ask: “What am I carrying into this morning?” No need to change it.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="intention"><span><strong>Choose one gentle intention</strong><br><span class="small">Pick one small, realistic thing to give your attention to today.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="morning" value="kindness"><span><strong>Leave room for something good</strong><br><span class="small">Name one small thing you might look forward to—or simply let the day unfold.</span></span></label>
+        </div>
+        <div class="ritual-progress" aria-hidden="true"><span id="morningRitualProgress"></span></div><div class="ritual-footer"><span class="small" id="morningRitualCount" aria-live="polite">0 of 5 steps chosen</span></div>
+        <div class="field"><label for="morningRitualReflection">A few words for this morning (optional)</label><textarea id="morningRitualReflection" maxlength="1200" rows="3" placeholder="Today, I want to meet myself with…"></textarea></div>
+        <button class="btn primary" type="button" id="saveMorningRitual">Save morning ritual</button><p class="small" id="morningRitualStatus" aria-live="polite">You can save an unfinished ritual, too.</p>
+      </div>
+      <div class="ritual-pane hidden" id="nightRitualPane">
+        <h3>Good evening. You can put the day down for now.</h3><p class="hint">Take around 5–10 minutes. Nothing needs to be solved before you rest.</p>
+        <div class="ritual-checks" role="group" aria-label="Night ritual steps">
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="night" value="pause"><span><strong>Let your pace soften</strong><br><span class="small">Take a few easy breaths and unclench what you can.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="night" value="win"><span><strong>Notice one small thing that went okay</strong><br><span class="small">It can be tiny, ordinary, or simply that you made it through.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="night" value="learning"><span><strong>Meet a hard moment with kindness</strong><br><span class="small">If something was difficult, ask what you needed—not what you did wrong.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="night" value="release"><span><strong>Set down one thing for tonight</strong><br><span class="small">You can return to it later. You don't have to carry it through the night.</span></span></label>
+          <label class="ritual-check"><input type="checkbox" data-ritual-step="night" value="rest"><span><strong>Make room for rest</strong><br><span class="small">Dim a light, put your phone aside for a moment, or get comfortable.</span></span></label>
+        </div>
+        <div class="ritual-progress" aria-hidden="true"><span id="nightRitualProgress"></span></div><div class="ritual-footer"><span class="small" id="nightRitualCount" aria-live="polite">0 of 5 steps chosen</span></div>
+        <div class="field"><label for="nightRitualReflection">A few words before rest (optional)</label><textarea id="nightRitualReflection" maxlength="1200" rows="3" placeholder="One thing I want to acknowledge, and one thing I can leave until tomorrow…"></textarea></div>
+        <button class="btn primary" type="button" id="saveNightRitual">Save night ritual</button><p class="small" id="nightRitualStatus" aria-live="polite">You don't have to end the day feeling perfect.</p>
+      </div>
+      <p class="small" style="margin:14px 0 0">Your ritual progress and optional reflections use CALMROOT's existing save and sync system. When signed in, they sync to your Firebase account; this is not an encrypted journal.</p>
     </section>
 
     <section class="card sanctuary-card" aria-labelledby="sanctuaryTitle">
@@ -291,6 +329,17 @@
       });
       loadTodayRoutine();
       window.addEventListener('calmroot-cloud-data-loaded',loadTodayRoutine);
+
+      // Morning and Night Rituals: date-keyed entries in the existing app-data object.
+      let activeRitual='morning';
+      function ritualToday(){return localDateKey()}
+      function renderRitual(kind){const today=ritualToday(),entry=((getData().rituals||{})[today]||{})[kind]||{};document.querySelectorAll('[data-ritual-step="'+kind+'"]').forEach(el=>el.checked=(entry.steps||[]).includes(el.value));const reflection=$(kind+'RitualReflection');reflection.value=entry.reflection||'';updateRitualProgress(kind);$(kind+'RitualStatus').textContent=entry.savedAt?'Saved for today. You can change it and save again whenever you like.':'You can save an unfinished ritual, too.';}
+      function updateRitualProgress(kind){const steps=[...document.querySelectorAll('[data-ritual-step="'+kind+'"]')],count=steps.filter(x=>x.checked).length;$(kind+'RitualCount').textContent=count+' of '+steps.length+' steps chosen';$(kind+'RitualProgress').style.width=(count/Math.max(steps.length,1)*100)+'%';}
+      function switchRitual(kind){activeRitual=kind;$('morningRitualPane').classList.toggle('hidden',kind!=='morning');$('nightRitualPane').classList.toggle('hidden',kind!=='night');document.querySelectorAll('[data-ritual-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ritualTab===kind)));}
+      document.querySelectorAll('[data-ritual-tab]').forEach(b=>b.addEventListener('click',()=>switchRitual(b.dataset.ritualTab)));
+      ['morning','night'].forEach(kind=>{document.querySelectorAll('[data-ritual-step="'+kind+'"]').forEach(el=>el.addEventListener('change',()=>updateRitualProgress(kind)));$(kind+'RitualReflection').addEventListener('input',()=>{});$('save'+kind.charAt(0).toUpperCase()+kind.slice(1)+'Ritual').addEventListener('click',()=>{const d=getData();if(!d.rituals||typeof d.rituals!=='object'||Array.isArray(d.rituals))d.rituals={};const today=ritualToday();if(!d.rituals[today]||typeof d.rituals[today]!=='object')d.rituals[today]={};d.rituals[today][kind]={steps:[...document.querySelectorAll('[data-ritual-step="'+kind+'"]:checked')].map(x=>x.value),reflection:$(kind+'RitualReflection').value.trim(),savedAt:new Date().toISOString()};if(putData(d)){renderRitual(kind);$(kind+'RitualStatus').textContent=window.calmrootCloud?.user?'Saved and syncing to your account.':'Saved on this device. Sign in to sync across devices.';toast(kind==='morning'?'Morning ritual saved. Take the day gently.':'Night ritual saved. You can rest now.')}});});
+      renderRitual('morning');renderRitual('night');window.addEventListener('calmroot-cloud-data-loaded',()=>{renderRitual('morning');renderRitual('night')});
+
       function openDialog(el){el.classList.remove('hidden');const focus=el.querySelector('button');if(focus)focus.focus();document.body.style.overflow='hidden'}
       function closeDialogs(){dialogs.forEach(d=>d.classList.add('hidden'));document.body.style.overflow='';stopBreathing();}
       document.querySelectorAll('.closeModal').forEach(b=>b.addEventListener('click',closeDialogs));dialogs.forEach(d=>d.addEventListener('click',e=>{if(e.target===d)closeDialogs()}));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDialogs()});
@@ -376,7 +425,7 @@
       $('calendarNext').addEventListener('click',()=>{calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()+1,1);renderCalendar()});
 
       $('exportData').addEventListener('click',()=>{const data=getData();const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='calmroot-my-data.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);toast('Export prepared. Keep the file somewhere private.')});
-      $('deleteData').addEventListener('click',async()=>{if(confirm('Delete all CALMROOT check-ins, routines, sanctuary notes and reflections saved in this browser'+(window.calmrootCloud?.user?' and your cloud account':'')+'? This cannot be undone.')){localStorage.removeItem(STORE);if(window.calmrootCloud?.user){try{await window.calmrootCloud.deleteData()}catch{toast('Local data deleted, but cloud deletion failed. Reconnect and try again.');renderEntries();return}}renderEntries();renderSanctuary();loadTodayRoutine();toast('CALMROOT saved data deleted.')}});
+      $('deleteData').addEventListener('click',async()=>{if(confirm('Delete all CALMROOT check-ins, routines, morning and night rituals, sanctuary notes, growth garden memories and reflections saved in this browser'+(window.calmrootCloud?.user?' and your cloud account':'')+'? This cannot be undone.')){localStorage.removeItem(STORE);if(window.calmrootCloud?.user){try{await window.calmrootCloud.deleteData()}catch{toast('Local data deleted, but cloud deletion failed. Reconnect and try again.');renderEntries();return}}renderEntries();renderSanctuary();loadTodayRoutine();renderRitual('morning');renderRitual('night');renderGrowthGarden();toast('CALMROOT saved data deleted.')}});
 
       const PROFILE_KEY='calmroot-profile-v1';
       const authShell=$('authShell'), loginView=$('loginView'), profileView=$('profileView');
